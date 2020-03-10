@@ -2,34 +2,22 @@ package de.teammartens.android.wattfinder.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import de.teammartens.android.wattfinder.KartenActivity;
 import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.model.ChargeEvent;
-import de.teammartens.android.wattfinder.model.FilterEintrag;
-import de.teammartens.android.wattfinder.worker.FilterWorks;
-import de.teammartens.android.wattfinder.worker.Utils;
 
 import static de.teammartens.android.wattfinder.worker.Utils.generateViewId;
-import static de.teammartens.android.wattfinder.worker.Utils.getResId;
 
 /**
  * Created by felix on 31.01.18.

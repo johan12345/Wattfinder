@@ -3,24 +3,17 @@ package de.teammartens.android.wattfinder.worker;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Build;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 
 import de.teammartens.android.wattfinder.KartenActivity;
@@ -28,16 +21,13 @@ import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.fragments.DetailsFragment;
 import de.teammartens.android.wattfinder.fragments.FilterFragment;
 import de.teammartens.android.wattfinder.fragments.ImageZoomFragment;
-import de.teammartens.android.wattfinder.fragments.MiniInfoFragment;
 import de.teammartens.android.wattfinder.fragments.SmartFilterFragment;
-import de.teammartens.android.wattfinder.model.PlaceAutocomplete;
 import de.teammartens.android.wattfinder.model.Saeule;
 
 import static android.view.View.VISIBLE;
 import static de.teammartens.android.wattfinder.KartenActivity.BackstackEXIT;
 import static de.teammartens.android.wattfinder.KartenActivity.fragmentManager;
 import static de.teammartens.android.wattfinder.KartenActivity.getInstance;
-import static de.teammartens.android.wattfinder.KartenActivity.layoutStyle;
 import static de.teammartens.android.wattfinder.KartenActivity.privacyConsent;
 
 /**

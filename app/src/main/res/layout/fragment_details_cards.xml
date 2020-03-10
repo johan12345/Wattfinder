@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -40,7 +40,7 @@
             android:orientation="vertical">
 
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="8dp"
@@ -75,7 +75,7 @@
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp">
 
-                        <android.support.v4.view.ViewPager
+                        <androidx.viewpager.widget.ViewPager
                             android:id="@+id/dImagePager"
                             android:layout_width="match_parent"
                             android:layout_height="240dp"
@@ -169,7 +169,7 @@
                     </LinearLayout>
                 </LinearLayout>
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
             <TextView
@@ -180,7 +180,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:visibility="gone" />
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/dStoerung"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -225,9 +225,9 @@
                         android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/dKosten"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -274,9 +274,9 @@
                         android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/vBooleans"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -350,9 +350,9 @@
                         android:textSize="14sp" />
                 </LinearLayout>
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/dLadeweile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -399,9 +399,9 @@
                         android:paddingLeft="10dp"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/dZeiten"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -473,9 +473,9 @@
                         android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/dHinweise"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -522,9 +522,9 @@
                         android:paddingLeft="10dp"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/dStecker"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -569,9 +569,9 @@
                         android:paddingRight="10dp"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/dPosition"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -618,9 +618,9 @@
                         android:paddingLeft="10dp"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/dEvents"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -665,14 +665,14 @@
                         android:orientation="vertical"></LinearLayout>
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
         </LinearLayout>
     </ScrollView>
 
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_routing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -692,7 +692,7 @@
         app:pressedTranslationZ="12dp"
         app:rippleColor="@android:color/white" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_browser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -724,4 +724,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

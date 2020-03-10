@@ -3,8 +3,8 @@ package de.teammartens.android.wattfinder.model;
 import android.app.SearchManager;
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v7.widget.SearchView;
+import androidx.cursoradapter.widget.CursorAdapter;
+import androidx.appcompat.widget.SearchView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import de.teammartens.android.wattfinder.KartenActivity;
+import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.worker.GeoWorks;
 import de.teammartens.android.wattfinder.worker.LogWorker;
 
@@ -35,7 +36,7 @@ public class ArrayAdapterSearchView extends SearchView {
     }
 
     public void initialize() {
-        mSearchAutoComplete = (SearchAutoComplete) findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        mSearchAutoComplete = (SearchAutoComplete) findViewById(R.id.search_src_text);
         this.setAdapter(null);
         this.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

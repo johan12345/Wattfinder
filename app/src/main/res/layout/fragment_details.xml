@@ -66,7 +66,7 @@
                  android:paddingLeft="10dp"
                  android:paddingRight="10dp">
 
-                 <android.support.v4.view.ViewPager
+                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/dImagePager"
                     android:layout_width="match_parent"
                     android:layout_height="240dp"
@@ -590,7 +590,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:paddingBottom="10dp">
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_routing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -607,7 +607,7 @@
         app:borderWidth="0dp"
         app:fabSize="normal"
         />
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_browser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

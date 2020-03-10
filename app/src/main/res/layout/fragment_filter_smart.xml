@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/filter_smart_card_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,9 +62,9 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/filter_smart_card_verbund"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
             android:visibility="visible"
             app:cardBackgroundColor="@color/color_error">
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -86,7 +86,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="80dp">
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/card_plug"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -245,9 +245,9 @@
 
                     </LinearLayout>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/card_card"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -425,9 +425,9 @@
 
                     </LinearLayout>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/card_extras"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -500,7 +500,7 @@
                             android:theme="@style/MyLightTheme" />
                     </LinearLayout>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
         </ScrollView>
@@ -543,7 +543,7 @@
 
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_preset"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -561,7 +561,7 @@
         app:pressedTranslationZ="12dp"
         app:rippleColor="@android:color/white" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_done"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
