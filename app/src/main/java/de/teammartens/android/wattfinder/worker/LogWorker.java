@@ -33,50 +33,49 @@ public class LogWorker {
     private static String id = "abcd1234";
     private static final String LOG_TAG = "LOG_WORKER";
     private static Set<LogEntry> LogCache = new HashSet<LogEntry>();
+
     public static boolean isVERBOSE() {
-        return (DEFAULT_DEBUGGING||VERBOSE);
+        return (DEFAULT_DEBUGGING || VERBOSE);
     }
 
     public static void setVERBOSE(boolean VERBOSE) {
         LogWorker.VERBOSE = VERBOSE;
-        d(LOG_TAG,"LogVerbose set to "+VERBOSE);
-        if(VERBOSE){
+        d(LOG_TAG, "LogVerbose set to " + VERBOSE);
+        if (VERBOSE) {
 
             new ExceptionWorker(KartenActivity.getInstance());
         }
         AnimationWorker.show_debug();
 
 
-
     }
 
 
-
-    public static void e(String TAG, String message){
-        cacheLog("E",TAG,message);
-        if (message != null && message.length() > 0) Log.e(TAG,message);
+    public static void e(String TAG, String message) {
+        cacheLog("E", TAG, message);
+        if (message != null && message.length() > 0) Log.e(TAG, message);
     }
 
-    public static void e(String TAG, String message, Exception e){
-        cacheLog("E",TAG,message+" Exception:"+e);
-        if (message != null && message.length() > 0) Log.e(TAG,message,e);
+    public static void e(String TAG, String message, Exception e) {
+        cacheLog("E", TAG, message + " Exception:" + e);
+        if (message != null && message.length() > 0) Log.e(TAG, message, e);
     }
 
-    public static void d(String TAG, String message){
+    public static void d(String TAG, String message) {
 
-        cacheLog("D",TAG,message);
-        if (message != null && message.length() > 0) Log.d(TAG,message);
+        cacheLog("D", TAG, message);
+        if (message != null && message.length() > 0) Log.d(TAG, message);
     }
 
-    public static void init_logging(){
+    public static void init_logging() {
 
         SharedPreferences sPref = KartenActivity.sharedPref;
 
-        id = sPref.getString("LoggingID","abcdef");
+        id = sPref.getString("LoggingID", "abcdef");
         if (id.equals("abcdef"))
-            id=generate_id();
+            id = generate_id();
 
-        if(DEFAULT_DEBUGGING)
+        if (DEFAULT_DEBUGGING)
             LogWorker.setVERBOSE(true);
 
         AnimationWorker.show_debug();
@@ -84,26 +83,24 @@ public class LogWorker {
     }
 
 
+    private static void cacheLog(final String type, final String TAG, final String message) {
 
+        LogCache.add(new LogEntry(type, TAG, message));
 
-
-    private static void cacheLog(final String type, final String TAG, final String message){
-
-        LogCache.add(new LogEntry(type,TAG,message));
-
-        if (LogCache.size()==25) {
+        if (LogCache.size() == 25) {
 
             sendLog(LogCache);//LogCache.clear();
-             }
+        }
     }
 
-    public static void sendLog(){
+    public static void sendLog() {
         sendLog(LogCache);
     }
-    public static void sendLog(final Set<LogEntry> logs){
-        String uri="http://wattfinder.7martens.de/LogWorkerAPI.php";
 
-        if(logs.size()>0&&isVERBOSE()) {
+    public static void sendLog(final Set<LogEntry> logs) {
+        String uri = "http://wattfinder.7martens.de/LogWorkerAPI.php";
+
+        if (logs.size() > 0 && isVERBOSE()) {
             StringRequest stringRequest = new StringRequest(Request.Method.POST, uri,
                     new Response.Listener<String>() {
                         @Override
@@ -137,7 +134,7 @@ public class LogWorker {
 
                     }
                     logs.clear();
-                    Log.v(LOG_TAG,i+"/"+LogCache.size()+" Logs verschickt");
+                    Log.v(LOG_TAG, i + "/" + LogCache.size() + " Logs verschickt");
                     return params;
                 }
 
@@ -147,68 +144,67 @@ public class LogWorker {
         }
     }
 
-    private static String generate_id(){
+    private static String generate_id() {
         final String alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
         final int N = alphabet.length();
-        StringBuilder id= new StringBuilder();
+        StringBuilder id = new StringBuilder();
 
         Random r = new Random();
 
         for (int i = 0; i < 6; i++) {
             id.append(alphabet.charAt(r.nextInt(N)));
         }
-        d(LOG_TAG,"New id generated: "+id);
+        d(LOG_TAG, "New id generated: " + id);
         SharedPreferences.Editor editor = KartenActivity.sharedPref.edit();
         editor.putString("LoggingID", id.toString());
         editor.apply();
         return id.toString();
     }
 
-private static class LogEntry {
-    private String mType = "";
-    private String mMessage = "";
-    private String mTag ="";
+    private static class LogEntry {
+        private String mType = "";
+        private String mMessage = "";
+        private String mTag = "";
 
 
-    LogEntry(String Type, String Tag, String Message){
-        mTag=Tag;
-        mType=Type;
-        mMessage=Message;
+        LogEntry(String Type, String Tag, String Message) {
+            mTag = Tag;
+            mType = Type;
+            mMessage = Message;
+        }
+
+        LogEntry() {
+            mTag = "null";
+            mType = "null";
+            mMessage = "null";
+        }
+
+        public String getTag() {
+            return mTag;
+        }
+
+        public void setTag(String tag) {
+            mTag = tag;
+        }
+
+        public String getType() {
+            return mType;
+        }
+
+        public void setType(String type) {
+            mType = type;
+        }
+
+        public String getMessage() {
+            return mMessage;
+        }
+
+        public void setMessage(String message) {
+            mMessage = message;
+        }
+
+
     }
-
-    LogEntry(){
-        mTag="null";
-        mType="null";
-        mMessage="null";
-    }
-
-    public String getTag() {
-        return mTag;
-    }
-
-    public void setTag(String tag) {
-        mTag = tag;
-    }
-
-    public String getType() {
-        return mType;
-    }
-
-    public void setType(String type) {
-        mType = type;
-    }
-
-    public String getMessage() {
-        return mMessage;
-    }
-
-    public void setMessage(String message) {
-        mMessage = message;
-    }
-
-
-
-}
 
 
 }

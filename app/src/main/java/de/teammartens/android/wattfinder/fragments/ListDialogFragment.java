@@ -3,13 +3,13 @@ package de.teammartens.android.wattfinder.fragments;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
-import androidx.appcompat.app.AlertDialog;
 import android.widget.ListView;
 
 import java.util.HashMap;
 import java.util.Iterator;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.model.FilterEintrag;
 import de.teammartens.android.wattfinder.worker.FilterWorks;
@@ -21,17 +21,16 @@ import de.teammartens.android.wattfinder.worker.FilterWorks;
 public class ListDialogFragment extends DialogFragment {
 
 
-
     private static final int STECKER = 0;
     private static final int KARTEN = 1;
-    private static HashMap<String,Boolean> Stecker, Karten;
+    private static HashMap<String, Boolean> Stecker, Karten;
     private static String[] SteckerListe, KartenListe;
 
     public static ListDialogFragment newInstance(int id) {
         ListDialogFragment frag = new ListDialogFragment();
         Bundle args = new Bundle();
 
-            args.putInt("id",id);
+        args.putInt("id", id);
         frag.setArguments(args);
         return frag;
     }
@@ -76,15 +75,14 @@ public class ListDialogFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String Liste = "";
-                                if (id==STECKER)Liste=FilterWorks.F_STECKER;else Liste=FilterWorks.F_KARTEN;
-                                FilterWorks.liste_aendern(Liste,FilterWorks.BELIEBIG);
+                                if (id == STECKER) Liste = FilterWorks.F_STECKER;
+                                else Liste = FilterWorks.F_KARTEN;
+                                FilterWorks.liste_aendern(Liste, FilterWorks.BELIEBIG);
                             }
                         }
                 )
                 .create();
     }
-
-
 
 
     protected void onPrepareDialog(int id, Dialog dialog) {
@@ -102,7 +100,7 @@ public class ListDialogFragment extends DialogFragment {
                 }
                 break;
             case KARTEN:
-              //  refresh_Adapter(KARTEN);
+                //  refresh_Adapter(KARTEN);
                 AlertDialog prepare_karten_dialog = (AlertDialog) dialog;
                 ListView list_karten = prepare_karten_dialog.getListView();
                 for (int i = 0; i < list_karten.getCount(); i++) {

@@ -10,14 +10,15 @@ import de.teammartens.android.wattfinder.worker.Utils;
 
 
 public class ChargeEvent {
-    private Integer chargepoint,provider;
-    private Integer reason,source;
-    private String nickname,comment,userid,entryId = "";
+    private Integer chargepoint, provider;
+    private Integer reason, source;
+    private String nickname, comment, userid, entryId = "";
     private String plug;
     private boolean deleted, isfault = false;
-    private Long timestamp, updatedAt,upstreamUpdatedAt = 0l;
+    private Long timestamp, updatedAt, upstreamUpdatedAt = 0l;
 
-    public ChargeEvent(Integer chargepoint, Integer provider, Integer reason, Integer source, String plug) {
+    public ChargeEvent(Integer chargepoint, Integer provider, Integer reason, Integer source,
+                       String plug) {
         this.chargepoint = chargepoint;
         this.provider = provider;
         this.reason = reason;
@@ -38,40 +39,40 @@ public class ChargeEvent {
         this.reason = 100;
         this.source = 0;
         this.userid = "0";
-        this.timestamp = System.currentTimeMillis()/1000;
-        this.nickname="";
-        this.comment="";
-        this.deleted=false;
-        this.isfault=false;
-        this.updatedAt = System.currentTimeMillis()/1000;
-        this.upstreamUpdatedAt = System.currentTimeMillis()/1000;
+        this.timestamp = System.currentTimeMillis() / 1000;
+        this.nickname = "";
+        this.comment = "";
+        this.deleted = false;
+        this.isfault = false;
+        this.updatedAt = System.currentTimeMillis() / 1000;
+        this.upstreamUpdatedAt = System.currentTimeMillis() / 1000;
 
 
     }
 
-    public boolean extractFromJSON(JSONObject jsonObject){
+    public boolean extractFromJSON(JSONObject jsonObject) {
 
-            this.chargepoint=jsonObject.optInt("chargepoint",-1);
-            this.provider = 0;
-            this.reason = jsonObject.optInt("reason",-1);
-            this.source = jsonObject.optInt("source",-1);
-            if(this.source>=0&&this.reason>=0&&this.chargepoint>0){
-                this.entryId=jsonObject.optString("entryId","-1");
+        this.chargepoint = jsonObject.optInt("chargepoint", -1);
+        this.provider = 0;
+        this.reason = jsonObject.optInt("reason", -1);
+        this.source = jsonObject.optInt("source", -1);
+        if (this.source >= 0 && this.reason >= 0 && this.chargepoint > 0) {
+            this.entryId = jsonObject.optString("entryId", "-1");
 
-                this.plug = jsonObject.optString("plug","");
-                this.nickname = jsonObject.optString("nickname","");
-                this.comment = jsonObject.optString("comment","");
-                this.deleted = jsonObject.optBoolean("deleted",false);
-                this.isfault = jsonObject.optBoolean("isfault",false);
-                this.userid = jsonObject.optString("userid","");
-                this.timestamp = jsonObject.optLong("Timestamp",0);
-                this.updatedAt = jsonObject.optLong("updatedAt",0);
-                this.upstreamUpdatedAt = jsonObject.optLong("upstreamUpdatedAt",0);
-                return true;
-            }else{
-                // not even enough basic infos in JSONObject
-                return false;
-            }
+            this.plug = jsonObject.optString("plug", "");
+            this.nickname = jsonObject.optString("nickname", "");
+            this.comment = jsonObject.optString("comment", "");
+            this.deleted = jsonObject.optBoolean("deleted", false);
+            this.isfault = jsonObject.optBoolean("isfault", false);
+            this.userid = jsonObject.optString("userid", "");
+            this.timestamp = jsonObject.optLong("Timestamp", 0);
+            this.updatedAt = jsonObject.optLong("updatedAt", 0);
+            this.upstreamUpdatedAt = jsonObject.optLong("upstreamUpdatedAt", 0);
+            return true;
+        } else {
+            // not even enough basic infos in JSONObject
+            return false;
+        }
 
     }
 
@@ -99,14 +100,13 @@ public class ChargeEvent {
         Resources Res = KartenActivity.getInstance().getResources();
 
         String s = " Illeagal reason code.";
-        if (reason>9&&reason<12) s=Res.getString(R.string.ce_result_success);
-            else if (reason>99&&reason<103){
-                String[] a = Res.getStringArray(R.array.ce_result_error);
-                s=Res.getString(R.string.ce_result_error)+", "+a[reason-100];
-            }
-            else if (reason>199&&reason<204){
+        if (reason > 9 && reason < 12) s = Res.getString(R.string.ce_result_success);
+        else if (reason > 99 && reason < 103) {
+            String[] a = Res.getStringArray(R.array.ce_result_error);
+            s = Res.getString(R.string.ce_result_error) + ", " + a[reason - 100];
+        } else if (reason > 199 && reason < 204) {
             String[] a = Res.getStringArray(R.array.ce_result_others);
-            s=Res.getString(R.string.ce_result_others)+", "+a[reason-200];
+            s = Res.getString(R.string.ce_result_others) + ", " + a[reason - 200];
         }
 
 
@@ -127,7 +127,7 @@ public class ChargeEvent {
     }
 
     public String getNickname() {
-        return (nickname!=null?nickname:"");
+        return (nickname != null ? nickname : "");
     }
 
     public void setNickname(String nickname) {
@@ -135,7 +135,7 @@ public class ChargeEvent {
     }
 
     public String getComment() {
-        return (comment!=null?comment:"");
+        return (comment != null ? comment : "");
     }
 
     public void setComment(String comment) {
@@ -143,7 +143,7 @@ public class ChargeEvent {
     }
 
     public String getUserid() {
-        return (userid!=null?userid:"0");
+        return (userid != null ? userid : "0");
     }
 
     public void setUserid(String userid) {
@@ -151,7 +151,7 @@ public class ChargeEvent {
     }
 
     public String getPlug() {
-        return (plug!=null?plug:"");
+        return (plug != null ? plug : "");
     }
 
     public void setPlug(String plug) {
@@ -167,7 +167,7 @@ public class ChargeEvent {
     }
 
     public boolean isIsfault() {
-        return (isfault||(reason>99&&reason<200));
+        return (isfault || (reason > 99 && reason < 200));
     }
 
     public void setIsfault(boolean isfault) {
@@ -181,6 +181,7 @@ public class ChargeEvent {
     public String getTimestampString() {
         return Utils.createDate(timestamp);
     }
+
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
@@ -202,7 +203,7 @@ public class ChargeEvent {
     }
 
     public String getEntryId() {
-        return (entryId!=null?entryId:"-1");
+        return (entryId != null ? entryId : "-1");
     }
 
     public void setEntryId(String entryId) {

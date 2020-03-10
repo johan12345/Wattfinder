@@ -38,19 +38,20 @@ public class NetWorker {
     }
 
     public static void rehabilateNetworkQuality() {
-        if(NETWORK_QUALITY<3)NETWORK_QUALITY++;
+        if (NETWORK_QUALITY < 3) NETWORK_QUALITY++;
         View v = KartenActivity.getInstance().findViewById(R.id.errorMessage);
         if (v != null) AnimationWorker.slideDown(v, 0);
     }
 
-    public static void resetNetworkQuality(){
+    public static void resetNetworkQuality() {
 
 
-        if(isWiFi())
+        if (isWiFi())
             setNetworkQuality(3);
         else {
             ConnectivityManager cm =
-                    (ConnectivityManager) KartenActivity.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    (ConnectivityManager) KartenActivity.getInstance().getSystemService(
+                            Context.CONNECTIVITY_SERVICE);
 
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
@@ -60,7 +61,8 @@ public class NetWorker {
                 if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
 
 
-                    TelephonyManager tm = (TelephonyManager) KartenActivity.getInstance().getSystemService(Context.TELEPHONY_SERVICE);
+                    TelephonyManager tm = (TelephonyManager) KartenActivity.getInstance().getSystemService(
+                            Context.TELEPHONY_SERVICE);
                     if (tm.getNetworkType() > 2)
                         setNetworkQuality(2);
                     else
@@ -74,21 +76,22 @@ public class NetWorker {
 
 
         ConnectivityManager cm =
-                (ConnectivityManager) KartenActivity.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) KartenActivity.getInstance().getSystemService(
+                        Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
 
-          resetNetworkQuality();
+        resetNetworkQuality();
 
         if (!isConnected) {
 
-            TextView tv = (TextView) KartenActivity.getInstance().findViewById(R.id.errorTitle);
+            TextView tv = KartenActivity.getInstance().findViewById(R.id.errorTitle);
             if (tv != null) tv.setText(getInstance().getString(R.string.error_network_title));
 
-            tv = (TextView) KartenActivity.getInstance().findViewById(R.id.errorText);
+            tv = KartenActivity.getInstance().findViewById(R.id.errorText);
             if (tv != null) tv.setText(getInstance().getString(R.string.error_network_title));
 
             View v = KartenActivity.getInstance().findViewById(R.id.errorMessage);
@@ -101,7 +104,7 @@ public class NetWorker {
 
 
     public static void handleError(VolleyError error, final int Task) {
-        handleError(error,Task,"");
+        handleError(error, Task, "");
     }
 
     public static void handleError(VolleyError error, final int Task, final String Liste) {
@@ -111,46 +114,47 @@ public class NetWorker {
  *Keine manuellen Retries da VOlley bereits welche implementiert. Lieber passen wir das Verhalten von Volley an
  *
 
-        if (RETRY < RETRY_MAX){
-            RETRY++;
-            TimerTask T;
+ if (RETRY < RETRY_MAX){
+ RETRY++;
+ TimerTask T;
 
-            if (Task==TASK_FILTER)
-                /*T= new TimerTask() {
-                    @Override
-                    public void run() {
-                        FilterWorks.filter_API_request(Liste);
-                    }
-                };
-                FilterWorks.filter_API_request(Liste);
-            else
-               /* T = new TimerTask() {
-                    @Override
-                    public void run() {
-                        SaeulenWorks.reloadMarker();
-                    }
-                };
-                SaeulenWorks.reloadMarker();
+ if (Task==TASK_FILTER)
+ /*T= new TimerTask() {
+@Override public void run() {
+FilterWorks.filter_API_request(Liste);
+}
+};
+ FilterWorks.filter_API_request(Liste);
+ else
+ /* T = new TimerTask() {
+@Override public void run() {
+SaeulenWorks.reloadMarker();
+}
+};
+ SaeulenWorks.reloadMarker();
 
-            //new Timer().schedule(T ,RETRY*DELAY);
-        }else
+ //new Timer().schedule(T ,RETRY*DELAY);
+ }else
  */
-       // {
+        // {
         if (error != null) {
-            Toast.makeText(KartenActivity.getInstance(), "NetzwerkFehler:" + error.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(KartenActivity.getInstance(), "NetzwerkFehler:" + error.getMessage(),
+                    Toast.LENGTH_LONG).show();
 
             if (LogWorker.isVERBOSE()) LogWorker.e("NETWORKER", "Netzwerkfehler: " + Liste + "\n"
-                    +(error.networkResponse!=null?error.networkResponse.statusCode+"  "+error.networkResponse.networkTimeMs+"ms":error.getMessage()));
-            TextView tv = (TextView) KartenActivity.getInstance().findViewById(R.id.errorTitle);
+                    + (error.networkResponse != null ? error.networkResponse.statusCode + "  " + error.networkResponse.networkTimeMs + "ms" : error.getMessage()));
+            TextView tv = KartenActivity.getInstance().findViewById(R.id.errorTitle);
             if (tv != null) tv.setText(getInstance().getString(R.string.error_network_title));
 
-            tv = (TextView) KartenActivity.getInstance().findViewById(R.id.errorText);
+            tv = KartenActivity.getInstance().findViewById(R.id.errorText);
             String errorMessage = KartenActivity.getInstance().getString(R.string.networkerror);
-            if (error.networkResponse!=null) {
+            if (error.networkResponse != null) {
                 if (error.networkResponse.networkTimeMs > 10000)
-                    errorMessage = KartenActivity.getInstance().getString(R.string.networkerror_timeout);
+                    errorMessage = KartenActivity.getInstance().getString(
+                            R.string.networkerror_timeout);
                 if (error.networkResponse.statusCode == 404)
-                    errorMessage = KartenActivity.getInstance().getString(R.string.networkerror_404);
+                    errorMessage = KartenActivity.getInstance().getString(
+                            R.string.networkerror_404);
             }
             if (tv != null) tv.setText(errorMessage);
             View v = KartenActivity.getInstance().findViewById(R.id.fab_retry);
@@ -158,7 +162,7 @@ public class NetWorker {
                                      @Override
                                      public void onClick(View v) {
                                          View V = KartenActivity.getInstance().findViewById(R.id.errorMessage);
-                                         AnimationWorker.slideDown(V,0);
+                                         AnimationWorker.slideDown(V, 0);
                                          if (Task == TASK_FILTER) FilterWorks.refresh_filterlisten_API();
                                          else SaeulenWorks.reloadMarker();
                                      }
@@ -174,15 +178,15 @@ public class NetWorker {
     }
 
 
-    public static boolean isWiFi(){
-
+    public static boolean isWiFi() {
 
 
         ConnectivityManager cm =
-                (ConnectivityManager) KartenActivity.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) KartenActivity.getInstance().getSystemService(
+                        Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if(activeNetwork == null) return false;
+        if (activeNetwork == null) return false;
 
         return (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI);
 

@@ -1,19 +1,19 @@
 package de.teammartens.android.wattfinder.model;
 /*
-* Copyright (C) 2015 Google Inc. All Rights Reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (C) 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
@@ -64,6 +64,7 @@ public class PlaceAutocompleteAdapter
      * The autocomplete filter used to restrict queries to a specific set of place types.
      */
     private AutocompleteFilter mPlaceFilter;
+
     /**
      * Initializes with a resource for text rows and autocomplete query bounds.
      *
@@ -76,12 +77,14 @@ public class PlaceAutocompleteAdapter
         mBounds = bounds;
         mPlaceFilter = filter;
     }
+
     /**
      * Sets the bounds for all subsequent queries.
      */
     public void setBounds(LatLngBounds bounds) {
         mBounds = bounds;
     }
+
     /**
      * Returns the number of results received in the last autocomplete query.
      */
@@ -89,6 +92,7 @@ public class PlaceAutocompleteAdapter
     public int getCount() {
         return mResultList.size();
     }
+
     /**
      * Returns an item from the last autocomplete query.
      */
@@ -96,6 +100,7 @@ public class PlaceAutocompleteAdapter
     public PlaceAutocomplete getItem(int position) {
         return mResultList.get(position);
     }
+
     /**
      * Returns the filter for the current set of autocomplete results.
      */
@@ -117,6 +122,7 @@ public class PlaceAutocompleteAdapter
                 }
                 return results;
             }
+
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results != null && results.count > 0) {
@@ -130,6 +136,7 @@ public class PlaceAutocompleteAdapter
         };
         return filter;
     }
+
     /**
      * Submits an autocomplete query to the Places Geo Data Autocomplete API.
      * objects to store the Place ID and description that the API returns.
@@ -145,7 +152,8 @@ public class PlaceAutocompleteAdapter
      */
     private ArrayList<PlaceAutocomplete> getAutocomplete(CharSequence constraint) {
         if (mGoogleApiClient.isConnected()) {
-            if (LogWorker.isVERBOSE()) LogWorker.d(TAG, "Starting autocomplete query for: " + constraint);
+            if (LogWorker.isVERBOSE())
+                LogWorker.d(TAG, "Starting autocomplete query for: " + constraint);
 // Submit the query to the autocomplete API and retrieve a PendingResult that will
 // contain the results when the query completes.
             PendingResult<AutocompletePredictionBuffer> results =
@@ -162,12 +170,14 @@ public class PlaceAutocompleteAdapter
             if (!status.isSuccess()) {
                 Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
                         Toast.LENGTH_SHORT).show();
-                LogWorker.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
+                LogWorker.e(TAG,
+                        "Error getting autocomplete prediction API call: " + status.toString());
                 autocompletePredictions.release();
                 return null;
             }
-            if (LogWorker.isVERBOSE()) LogWorker.d(TAG, "Query completed. Received " + autocompletePredictions.getCount()
-                    + " predictions.");
+            if (LogWorker.isVERBOSE())
+                LogWorker.d(TAG, "Query completed. Received " + autocompletePredictions.getCount()
+                        + " predictions.");
 // Copy the results into our own data structure, because we can't hold onto the buffer.
 // AutocompletePrediction objects encapsulate the API response (place ID and description).
             Iterator<AutocompletePrediction> iterator = autocompletePredictions.iterator();

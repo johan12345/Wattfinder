@@ -1,20 +1,21 @@
 package de.teammartens.android.wattfinder.fragments;
 
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.tabs.TabLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 import de.teammartens.android.wattfinder.KartenActivity;
 import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.worker.AnimationWorker;
@@ -27,7 +28,6 @@ import de.teammartens.android.wattfinder.worker.LogWorker;
  * Created by felix on 10.05.15.
  */
 public class FilterFragment extends Fragment {
-
 
 
     private TabLayout tabLayout;
@@ -44,25 +44,24 @@ public class FilterFragment extends Fragment {
         filterView = inflater.inflate(R.layout.fragment_filter, container, false);
 
 
+        // toolbar = (Toolbar) filterView.findViewById(R.id.toolbar);
+        // setSupportActionBar(toolbar);
 
-       // toolbar = (Toolbar) filterView.findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
+        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        viewPager = (ViewPager) filterView.findViewById(R.id.viewpager);
+        viewPager = filterView.findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
-        tabLayout = (TabLayout) filterView.findViewById(R.id.tabs);
+        tabLayout = filterView.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition() == 4)
-                {View v = filterView.findViewById(R.id.fab_container);
+                if (tab.getPosition() == 4) {
+                    View v = filterView.findViewById(R.id.fab_container);
                     AnimationWorker.slideDown(v, 100);
-                    }
+                }
 
             }
 
@@ -77,10 +76,11 @@ public class FilterFragment extends Fragment {
             }
         });
 
-        TextView v = (TextView) filterView.findViewById(R.id.fPreset);
-        v.setText(KartenActivity.getInstance().getString(R.string.filterPreset)+" "+FilterWorks.PRESET);
+        TextView v = filterView.findViewById(R.id.fPreset);
+        v.setText(KartenActivity.getInstance().getString(
+                R.string.filterPreset) + " " + FilterWorks.PRESET);
 
-        v = (TextView) filterView.findViewById(R.id.filter_switch_newdesign);
+        v = filterView.findViewById(R.id.filter_switch_newdesign);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +97,7 @@ public class FilterFragment extends Fragment {
         adapter.addFragment(new Filter_plugs_Fragment(), getString(R.string.filterSteckerTitel));
         adapter.addFragment(new Filter_cards_Fragment(), getString(R.string.filterLadekartenTitel));
         adapter.addFragment(new Filter_carrier_Fragment(), getString(R.string.filterVerbundTitel));
-       // adapter.addFragment(new Filter_Presets_Fragment(), getString(R.string.filterPresets));
+        // adapter.addFragment(new Filter_Presets_Fragment(), getString(R.string.filterPresets));
         viewPager.setAdapter(adapter);
 
     }
@@ -132,11 +132,7 @@ public class FilterFragment extends Fragment {
     }
 
 
-
-
-
-
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         if (filterView != null) {
 
@@ -144,35 +140,32 @@ public class FilterFragment extends Fragment {
             filterView.setAlpha(1.0f);
 
 
-
         }
         fInstance = this;
     }
 
-public void onResume(){
-    super.onResume();
+    public void onResume() {
+        super.onResume();
 
 
-    View v = (View) filterView.findViewById(R.id.fPreset);
+        View v = filterView.findViewById(R.id.fPreset);
 
 
+        if (v != null)
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "FAB Presets");
+                    show_presets();
 
-if(v!=null)
-    v.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if(LogWorker.isVERBOSE())LogWorker.d(LOG_TAG,"FAB Presets");
-           show_presets();
-
-        }
-    });
-    AnimationWorker.hide_mapSearch();
-    AnimationWorker.hide_fabs();
-
+                }
+            });
+        AnimationWorker.hide_mapSearch();
+        AnimationWorker.hide_fabs();
 
 
-    //v = (View) filterView.findViewById(R.id.fab_done);
-    //slideDown(v, 0);
+        //v = (View) filterView.findViewById(R.id.fab_done);
+        //slideDown(v, 0);
     /*if(v!=null)
         v.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,56 +177,61 @@ if(v!=null)
             }
         });*/
 
-    cFm = getChildFragmentManager();
+        cFm = getChildFragmentManager();
 
-    if (KartenActivity.layoutStyle()=="land") {
-        KartenActivity.setMapPaddingX(filterView.getWidth());
-        GeoWorks.movemapPosition("FilterFragment");
+        if (KartenActivity.layoutStyle() == "land") {
+            KartenActivity.setMapPaddingX(filterView.getWidth());
+            GeoWorks.movemapPosition("FilterFragment");
+        }
     }
-}
-public void onPause(){
-    super.onPause();
+
+    public void onPause() {
+        super.onPause();
 
 
-}
+    }
 
-    public static void setPresetLabel(){
-        TextView v = (TextView) filterView.findViewById(R.id.fPreset);
+    public static void setPresetLabel() {
+        TextView v = filterView.findViewById(R.id.fPreset);
         v.setText(FilterWorks.PRESET);
     }
 
-private void show_presets(){
-FragmentManager fM = getChildFragmentManager();
-    FragmentTransaction fT = fM.beginTransaction()
-            .setCustomAnimations(R.anim.fragment_slide_in,
-                    R.anim.fragment_slide_out,
-                    R.anim.fragment_slide_in,
-                    R.anim.fragment_slide_out);
-    Fragment f = fM.findFragmentByTag("pFragment");
+    private void show_presets() {
+        FragmentManager fM = getChildFragmentManager();
+        FragmentTransaction fT = fM.beginTransaction()
+                .setCustomAnimations(R.anim.fragment_slide_in,
+                        R.anim.fragment_slide_out,
+                        R.anim.fragment_slide_in,
+                        R.anim.fragment_slide_out);
+        Fragment f = fM.findFragmentByTag("pFragment");
 
         if (f == null) {
-            if ( LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Presets wird neu gebildet");
-            fT.add(R.id.fragment_filter_presets, Fragment.instantiate(this.getActivity(), Filter_Presets_Fragment.class.getName()), "pFragment").addToBackStack(null).commit();
+            if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Presets wird neu gebildet");
+            fT.add(R.id.fragment_filter_presets, Fragment.instantiate(this.getActivity(),
+                    Filter_Presets_Fragment.class.getName()), "pFragment").addToBackStack(
+                    null).commit();
         } else if (f.isHidden()) {
             if (LogWorker.isVERBOSE())
-                LogWorker.d(LOG_TAG, "Presets schon vorhanden" + f.isHidden() + " --" + f.isVisible() + "--" + f.isAdded());
-            fT.show(f).addToBackStack(null).commit(); //replace(R.id.infoFragment, Fragment.instantiate(getInstance(), MiniInfoFragment.class.getName()), "iFragment");
+                LogWorker.d(LOG_TAG,
+                        "Presets schon vorhanden" + f.isHidden() + " --" + f.isVisible() + "--" + f.isAdded());
+            fT.show(f).addToBackStack(
+                    null).commit(); //replace(R.id.infoFragment, Fragment.instantiate(getInstance(), MiniInfoFragment.class.getName()), "iFragment");
 
         }
 
-    //slideUp(filterView.findViewById(R.id.fab_done), 200);
+        //slideUp(filterView.findViewById(R.id.fab_done), 200);
 
-    //KartenActivity.BackstackEXIT=false;
+        //KartenActivity.BackstackEXIT=false;
     }
 
 
-    public static void hide_presets(){
-        if(fInstance==null) return;
-        if(cFm==null){
+    public static void hide_presets() {
+        if (fInstance == null) return;
+        if (cFm == null) {
             cFm = fInstance.getChildFragmentManager();
         }
         Fragment f = cFm.findFragmentByTag("pFragment");
-        if (f !=null && f.isVisible()){
+        if (f != null && f.isVisible()) {
             cFm.beginTransaction().setCustomAnimations(R.anim.fragment_slide_in,
                     R.anim.fragment_slide_out,
                     R.anim.fragment_slide_in,
@@ -244,10 +242,11 @@ FragmentManager fM = getChildFragmentManager();
 
     }
 
-    public static void updatePagerChild(){
+    public static void updatePagerChild() {
         if (LogWorker.isVERBOSE())
-            LogWorker.d(LOG_TAG, "updatePagerChild " + viewPager.getCurrentItem() + " Preset:"+FilterWorks.PRESET);
-        switch (viewPager.getCurrentItem()){
+            LogWorker.d(LOG_TAG,
+                    "updatePagerChild " + viewPager.getCurrentItem() + " Preset:" + FilterWorks.PRESET);
+        switch (viewPager.getCurrentItem()) {
             case 0:
                 Filter_Basic_Fragment.ladeListe();
                 break;
@@ -267,7 +266,6 @@ FragmentManager fM = getChildFragmentManager();
         }
 
     }
-
 
 
 }

@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.worker.FilterWorks;
 import de.teammartens.android.wattfinder.worker.LogWorker;
 import de.teammartens.android.wattfinder.worker.SaeulenWorks;
-import de.teammartens.android.wattfinder.R;
 
 /**
  * Created by felix on 30.10.16.
@@ -23,9 +23,9 @@ import de.teammartens.android.wattfinder.R;
 
 public class mFilterListAdapter extends ArrayAdapter<FilterEintrag> {
 
-    private ArrayList<FilterEintrag> filterListe =new ArrayList<FilterEintrag>();
-    private  String LISTE = new String();
-    private String TAG = new String ();
+    private ArrayList<FilterEintrag> filterListe = new ArrayList<FilterEintrag>();
+    private String LISTE = "";
+    private String TAG = "";
 
     public void setcBeliebig(CheckBox cBeliebig) {
         this.cBeliebig = cBeliebig;
@@ -39,7 +39,8 @@ public class mFilterListAdapter extends ArrayAdapter<FilterEintrag> {
         super(context, textViewResourceId, filterListe);
         this.filterListe = new ArrayList<FilterEintrag>();
         this.filterListe.addAll(filterListe);
-        Log.v(TAG+"(Inctance)","neue Filterliste für"+LISTE+" mit "+this.filterListe.size()+" Einträgen");
+        Log.v(TAG + "(Inctance)",
+                "neue Filterliste für" + LISTE + " mit " + this.filterListe.size() + " Einträgen");
     }
 
     private class ViewHolder {
@@ -48,14 +49,15 @@ public class mFilterListAdapter extends ArrayAdapter<FilterEintrag> {
 
     }
 
-    public  void updatefilterListe(ArrayList<FilterEintrag> mfilterListe){
-       if(filterListe==null){
-           filterListe = new ArrayList<FilterEintrag>();
-       }
+    public void updatefilterListe(ArrayList<FilterEintrag> mfilterListe) {
+        if (filterListe == null) {
+            filterListe = new ArrayList<FilterEintrag>();
+        }
         filterListe.clear();
         filterListe.addAll(mfilterListe);
         notifyDataSetChanged();
-        Log.v(TAG+"update","neue Filterliste für"+LISTE+" mit "+this.filterListe.size()+" Einträgen");
+        Log.v(TAG + "update",
+                "neue Filterliste für" + LISTE + " mit " + this.filterListe.size() + " Einträgen");
     }
 
     @Override
@@ -73,19 +75,18 @@ public class mFilterListAdapter extends ArrayAdapter<FilterEintrag> {
             convertView = vi.inflate(R.layout.filterlisteneintrag, null);
 
 
-
-
             holder = new mFilterListAdapter.ViewHolder();
 
-            holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
+            holder.name = convertView.findViewById(R.id.checkBox1);
             holder.name.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     CheckBox cb = (CheckBox) v;
 
-                    if(LogWorker.isVERBOSE())LogWorker.d("FilterAdapter"+TAG,"onClick:"+cb.getText()+ " ändern zu"+cb.isChecked());
+                    if (LogWorker.isVERBOSE()) LogWorker.d("FilterAdapter" + TAG,
+                            "onClick:" + cb.getText() + " ändern zu" + cb.isChecked());
                     // Return wird dann gleich in Anzeige gesetzt - > direkte Rückmeldung obs geklappt hat
                     cb.setChecked(FilterWorks.liste_aendern(LISTE, (String) cb.getText()));
-            if (cBeliebig!=null) cBeliebig.setChecked(FilterWorks.Liste_beliebig(LISTE));
+                    if (cBeliebig != null) cBeliebig.setChecked(FilterWorks.Liste_beliebig(LISTE));
                     SaeulenWorks.checkMarkerCache(TAG);
                 }
             });
@@ -94,7 +95,8 @@ public class mFilterListAdapter extends ArrayAdapter<FilterEintrag> {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
 
-                    if(LogWorker.isVERBOSE())LogWorker.d("FilterAdapter"+TAG,"onCheckedChange:"+buttonView.getText()+ " ändern zu"+isChecked);
+                    if (LogWorker.isVERBOSE()) LogWorker.d("FilterAdapter" + TAG,
+                            "onCheckedChange:" + buttonView.getText() + " ändern zu" + isChecked);
                     // Return wird dann gleich in Anzeige gesetzt - > direkte Rückmeldung obs geklappt hat
                    /* buttonView.setChecked(FilterWorks.liste_aendern(LISTE, (String) buttonView.getText()));
                     if (cBeliebig!=null) cBeliebig.setChecked(FilterWorks.Liste_beliebig(LISTE));
@@ -104,27 +106,24 @@ public class mFilterListAdapter extends ArrayAdapter<FilterEintrag> {
 
 
             convertView.setTag(holder);
-        }
-        else {
+        } else {
             holder = (mFilterListAdapter.ViewHolder) convertView.getTag();
         }
-
 
 
         holder.name.setText(filterEintrag.getTitel());
         holder.name.setChecked(filterEintrag.isSelected());
 
 
-
         return convertView;
 
     }
 
-    public void setTag(String tag){
+    public void setTag(String tag) {
         TAG = tag;
     }
 
-    public void setListe(String liste){
+    public void setListe(String liste) {
         LISTE = liste;
     }
 

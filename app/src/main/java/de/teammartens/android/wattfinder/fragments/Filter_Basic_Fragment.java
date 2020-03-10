@@ -1,7 +1,6 @@
 package de.teammartens.android.wattfinder.fragments;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
 import de.teammartens.android.wattfinder.KartenActivity;
 import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.worker.FilterWorks;
@@ -43,7 +43,7 @@ public class Filter_Basic_Fragment extends Fragment {
     }
 
 
-    public void onResume(){
+    public void onResume() {
         super.onResume();
 
         View v = this.getView().findViewById(R.id.fKostenlos);
@@ -57,7 +57,6 @@ public class Filter_Basic_Fragment extends Fragment {
         });
 
 
-
         v = filterBasicView.findViewById(R.id.fKostenlosparken);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +67,7 @@ public class Filter_Basic_Fragment extends Fragment {
             }
         });
 
-        v =  filterBasicView.findViewById(R.id.fHotels);
+        v = filterBasicView.findViewById(R.id.fHotels);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +97,7 @@ public class Filter_Basic_Fragment extends Fragment {
             }
         });
 
-        v =  filterBasicView.findViewById(R.id.fBarrierefrei);
+        v = filterBasicView.findViewById(R.id.fBarrierefrei);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,24 +107,34 @@ public class Filter_Basic_Fragment extends Fragment {
             }
         });
 
-        v =  filterBasicView.findViewById(R.id.fStoerung);
+        v = filterBasicView.findViewById(R.id.fStoerung);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CheckBox cb = (CheckBox) v;
-                cb.setChecked(FilterWorks.setze_filter(FilterWorks.F_KEINESTOERUNG, cb.isChecked()));
+                cb.setChecked(
+                        FilterWorks.setze_filter(FilterWorks.F_KEINESTOERUNG, cb.isChecked()));
                 SaeulenWorks.checkMarkerCache("FILTER_Basic");
             }
         });
 
-        Spinner v2 = (Spinner) filterBasicView.findViewById(R.id.f_opening);
+        Spinner v2 = filterBasicView.findViewById(R.id.f_opening);
 
         v2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {FilterWorks.setze_filter(FilterWorks.F_open247, false);FilterWorks.setze_filter(FilterWorks.F_opennow, false);}
-                if (position == 1) {FilterWorks.setze_filter(FilterWorks.F_open247, true);FilterWorks.setze_filter(FilterWorks.F_opennow, false);}
-                if (position == 2) {FilterWorks.setze_filter(FilterWorks.F_open247, false);FilterWorks.setze_filter(FilterWorks.F_opennow, true);}
+                if (position == 0) {
+                    FilterWorks.setze_filter(FilterWorks.F_open247, false);
+                    FilterWorks.setze_filter(FilterWorks.F_opennow, false);
+                }
+                if (position == 1) {
+                    FilterWorks.setze_filter(FilterWorks.F_open247, true);
+                    FilterWorks.setze_filter(FilterWorks.F_opennow, false);
+                }
+                if (position == 2) {
+                    FilterWorks.setze_filter(FilterWorks.F_open247, false);
+                    FilterWorks.setze_filter(FilterWorks.F_opennow, true);
+                }
 
                 SaeulenWorks.checkMarkerCache("FILTER_Basic");
             }
@@ -136,13 +145,13 @@ public class Filter_Basic_Fragment extends Fragment {
             }
         });
 
-        SeekBar s = (SeekBar) filterBasicView.findViewById(R.id.fPowerBar);
+        SeekBar s = filterBasicView.findViewById(R.id.fPowerBar);
         s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
                 if (fromUser) {
-                    TextView t = (TextView) filterBasicView.findViewById(R.id.fPowerDisplay);
+                    TextView t = filterBasicView.findViewById(R.id.fPowerDisplay);
                     t.setText("\u2265" + FilterWorks.setze_power(progress) + "kW");
                     SaeulenWorks.checkMarkerCache("FILTER_Basic");
                 }
@@ -168,50 +177,50 @@ public class Filter_Basic_Fragment extends Fragment {
             }
         });*/
 
-        if(LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG,"FilterBasic onResume");
+        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "FilterBasic onResume");
         ladeListe();
     }
 
 
-    public static void ladeListe(){
-        if ( LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG,"LadeListe");
-        CheckBox c  = (CheckBox) filterBasicView.findViewById(R.id.fKostenlos);
+    public static void ladeListe() {
+        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "LadeListe");
+        CheckBox c = filterBasicView.findViewById(R.id.fKostenlos);
 
         c.setChecked(FilterWorks.lese_filter(FilterWorks.F_KOSTENLOS));
 
-        c = (CheckBox) filterBasicView.findViewById(R.id.fKostenlosparken);
+        c = filterBasicView.findViewById(R.id.fKostenlosparken);
 
         c.setChecked(FilterWorks.lese_filter(FilterWorks.F_PARKEN));
 
-        c = (CheckBox) filterBasicView.findViewById(R.id.fBestaetigt);
+        c = filterBasicView.findViewById(R.id.fBestaetigt);
 
         c.setChecked(FilterWorks.lese_filter(FilterWorks.F_BESTAETIGT));
-        c = (CheckBox) filterBasicView.findViewById(R.id.fBarrierefrei);
+        c = filterBasicView.findViewById(R.id.fBarrierefrei);
 
         c.setChecked(FilterWorks.lese_filter(FilterWorks.F_BARRIEREFREI));
         //ergänze die Erläuterung zum Barrierefrei FIlter
-        TextView t = (TextView) filterBasicView.findViewById(R.id.fBarrierefrei_hint);
-        String bfText ="";
-        final int listenlang = (FilterWorks.listenlaenge(FilterWorks.F_VERBUND)+FilterWorks.listenlaenge(FilterWorks.F_KARTEN));
-        if (listenlang>0) {
+        TextView t = filterBasicView.findViewById(R.id.fBarrierefrei_hint);
+        String bfText = "";
+        final int listenlang = (FilterWorks.listenlaenge(
+                FilterWorks.F_VERBUND) + FilterWorks.listenlaenge(FilterWorks.F_KARTEN));
+        if (listenlang > 0) {
             bfText = KartenActivity.getInstance().getString(R.string.also);
-            t.setText(listenlang+" "+KartenActivity.getInstance().getString(R.string.filterKartenaktiv));
-        }
-        else{
-            bfText=KartenActivity.getInstance().getString(R.string.only);
+            t.setText(listenlang + " " + KartenActivity.getInstance().getString(
+                    R.string.filterKartenaktiv));
+        } else {
+            bfText = KartenActivity.getInstance().getString(R.string.only);
             t.setText(KartenActivity.getInstance().getString(R.string.filterkeineKarten));
         }
-        c.setText(bfText+ " " +KartenActivity.getInstance().getString(R.string.filterBarrierefrei));
+        c.setText(
+                bfText + " " + KartenActivity.getInstance().getString(R.string.filterBarrierefrei));
 
 
-
-
-        c = (CheckBox) filterBasicView.findViewById(R.id.fStoerung);
+        c = filterBasicView.findViewById(R.id.fStoerung);
 
         c.setChecked(FilterWorks.lese_filter(FilterWorks.F_KEINESTOERUNG));
 
 
-        Spinner sp = (Spinner) filterBasicView.findViewById(R.id.f_opening);
+        Spinner sp = filterBasicView.findViewById(R.id.f_opening);
         List<String> list = new ArrayList<String>();
         list.add(KartenActivity.getInstance().getString(R.string.filter_opananytime));
         list.add(KartenActivity.getInstance().getString(R.string.filter247));
@@ -222,42 +231,41 @@ public class Filter_Basic_Fragment extends Fragment {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp.setAdapter(dataAdapter);
 
-        if(FilterWorks.lese_filter(FilterWorks.F_open247)) sp.setSelection(1);
-            else if (FilterWorks.lese_filter(FilterWorks.F_opennow)) sp.setSelection(2);
-            else sp.setSelection(0);
+        if (FilterWorks.lese_filter(FilterWorks.F_open247)) sp.setSelection(1);
+        else if (FilterWorks.lese_filter(FilterWorks.F_opennow)) sp.setSelection(2);
+        else sp.setSelection(0);
 
-        SeekBar s = (SeekBar) filterBasicView.findViewById(R.id.fPowerBar);
-        t = (TextView) filterBasicView.findViewById(R.id.fPowerDisplay);
-        Integer p=FilterWorks.lese_minpower();
-        s.setMax(FilterWorks.F_POWER_VALUE.length-1);
-        t.setText("\u2265"+FilterWorks.F_POWER_VALUE[0]+"kW");
-        for (Integer i=0;i<FilterWorks.F_POWER_VALUE.length;i++) {
-            if (p>=FilterWorks.F_POWER_VALUE[i]){
+        SeekBar s = filterBasicView.findViewById(R.id.fPowerBar);
+        t = filterBasicView.findViewById(R.id.fPowerDisplay);
+        Integer p = FilterWorks.lese_minpower();
+        s.setMax(FilterWorks.F_POWER_VALUE.length - 1);
+        t.setText("\u2265" + FilterWorks.F_POWER_VALUE[0] + "kW");
+        for (Integer i = 0; i < FilterWorks.F_POWER_VALUE.length; i++) {
+            if (p >= FilterWorks.F_POWER_VALUE[i]) {
                 s.setProgress(i);
-                t.setText("\u2265"+FilterWorks.F_POWER_VALUE[i]+"kW");}
+                t.setText("\u2265" + FilterWorks.F_POWER_VALUE[i] + "kW");
+            }
         }
-
-
 
 
     }
 
-    public void onPause(){
+    public void onPause() {
         super.onPause();
 
     }
 
-    public void onStop(){
+    public void onStop() {
         super.onStop();
 
     }
 
-    public void onStart(){
+    public void onStart() {
         super.onStart();
 
     }
 
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
 
     }

@@ -2,8 +2,6 @@ package de.teammartens.android.wattfinder.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.model.ImagePagerAdapter;
 import de.teammartens.android.wattfinder.worker.AnimationWorker;
@@ -55,54 +55,57 @@ public class ImageZoomFragment extends Fragment {
         super.onStart();
 
 
-        imageView=this.getView();
-        mContext=this.getContext();
+        imageView = this.getView();
+        mContext = this.getContext();
     }
 
     public void onResume() {
         super.onResume();
-        Titel=AnimationWorker.getDetailsFragment().getmTitel();
-        final TextView tv = (TextView) this.getView().findViewById(R.id.izBezeichnung);
+        Titel = AnimationWorker.getDetailsFragment().getmTitel();
+        final TextView tv = this.getView().findViewById(R.id.izBezeichnung);
         tv.setText(Titel);
-        ID=AnimationWorker.getDetailsFragment().getmID();
+        ID = AnimationWorker.getDetailsFragment().getmID();
         initializeWorker();
 
     }
 
-    public void onPause (){
+    public void onPause() {
         super.onPause();
         AnimationWorker.hideImageZoom();
     }
 
 
-
     public static void initializeWorker() {
 
 
-        ImagePager = (ViewPager) imageView.findViewById(R.id.izImagePager);
+        ImagePager = imageView.findViewById(R.id.izImagePager);
 
-        pager_indicator = (LinearLayout) imageView.findViewById(R.id.izImgPagerCountDots);
+        pager_indicator = imageView.findViewById(R.id.izImgPagerCountDots);
 
         ImageWorker.initImages(true);
 
-        ImageWorker.setImgAdapterHD(new ImagePagerAdapter(mContext, ImageWorker.getImgBitmaps(true),ImageWorker.getImgBitmaps(false),true));
+        ImageWorker.setImgAdapterHD(new ImagePagerAdapter(mContext, ImageWorker.getImgBitmaps(true),
+                ImageWorker.getImgBitmaps(false), true));
 
         ImagePager.setAdapter(ImageWorker.imgAdapterHD);
         ImagePager.setCurrentItem(ImageWorker.getImgIndex());
-        if(LogWorker.isVERBOSE())LogWorker.d(LOG_TAG,"getImgIndex"+ImageWorker.getImgIndex());
+        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "getImgIndex" + ImageWorker.getImgIndex());
         ImagePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
 
             }
 
             @Override
             public void onPageSelected(int position) {
                 for (int i = 0; i < ImageWorker.getImgCount(); i++) {
-                    dots[i].setImageDrawable(mContext.getResources().getDrawable(R.drawable.nonselecteditem_dot));
+                    dots[i].setImageDrawable(
+                            mContext.getResources().getDrawable(R.drawable.nonselecteditem_dot));
                 }
 
-                dots[position].setImageDrawable(mContext.getResources().getDrawable(R.drawable.selecteditem_dot));
+                dots[position].setImageDrawable(
+                        mContext.getResources().getDrawable(R.drawable.selecteditem_dot));
                 ImageWorker.setImgIndex(position);
             }
 
@@ -115,19 +118,17 @@ public class ImageZoomFragment extends Fragment {
     }
 
 
-
-
     private static void setUiPageViewController() {
         int dotsCount = ImageWorker.getImgCount();
 
-        if(dots==null)dots = new ImageView[5];
+        if (dots == null) dots = new ImageView[5];
 
         for (int i = 0; i < 5; i++) {
-            if(pager_indicator.getChildAt(i)!=null){
+            if (pager_indicator.getChildAt(i) != null) {
                 dots[i] = (ImageView) pager_indicator.getChildAt(i);
 
 
-            }else {
+            } else {
                 dots[i] = new ImageView(mContext);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -140,14 +141,15 @@ public class ImageZoomFragment extends Fragment {
 
 
             }
-            dots[i].setImageDrawable(mContext.getResources().getDrawable(R.drawable.nonselecteditem_dot));
-            if (i>=dotsCount) dots[i].setVisibility(GONE);
+            dots[i].setImageDrawable(
+                    mContext.getResources().getDrawable(R.drawable.nonselecteditem_dot));
+            if (i >= dotsCount) dots[i].setVisibility(GONE);
             else dots[i].setVisibility(View.VISIBLE);
         }
 
-        dots[ImageWorker.getImgIndex()].setImageDrawable(mContext.getResources().getDrawable(R.drawable.selecteditem_dot));
+        dots[ImageWorker.getImgIndex()].setImageDrawable(
+                mContext.getResources().getDrawable(R.drawable.selecteditem_dot));
     }
-
 
 
 }

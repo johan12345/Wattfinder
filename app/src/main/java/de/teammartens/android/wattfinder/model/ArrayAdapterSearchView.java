@@ -3,14 +3,14 @@ package de.teammartens.android.wattfinder.model;
 import android.app.SearchManager;
 import android.content.Context;
 import android.database.Cursor;
-import androidx.cursoradapter.widget.CursorAdapter;
-import androidx.appcompat.widget.SearchView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.cursoradapter.widget.CursorAdapter;
 import de.teammartens.android.wattfinder.KartenActivity;
 import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.worker.GeoWorks;
@@ -36,22 +36,25 @@ public class ArrayAdapterSearchView extends SearchView {
     }
 
     public void initialize() {
-        mSearchAutoComplete = (SearchAutoComplete) findViewById(R.id.search_src_text);
+        mSearchAutoComplete = findViewById(R.id.search_src_text);
         this.setAdapter(null);
         this.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor c = (Cursor) parent.getAdapter().getItem(position);
                 String query = c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY));
-                mSearchAutoComplete.setText(c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1)));
+                mSearchAutoComplete.setText(
+                        c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1)));
                 if (LogWorker.isVERBOSE())
                     LogWorker.d("ArrayAdapterSearchView", "Itemclicked " + position + " " + query);
-                if (c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_INTENT_DATA)).equals("RecentSuggestion"))
+                if (c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_INTENT_DATA)).equals(
+                        "RecentSuggestion"))
                     GeoWorks.starteSuche(query);
                 else
                     GeoWorks.starteSucheSuggested(query);
                 c.close();
-                InputMethodManager imm = (InputMethodManager) KartenActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) KartenActivity.getInstance().getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             }
         });
@@ -76,7 +79,7 @@ public class ArrayAdapterSearchView extends SearchView {
 
     @Override
     public void onActionViewCollapsed() {
-        if (mSearchViewCollapsedEventListener != null){
+        if (mSearchViewCollapsedEventListener != null) {
             mSearchViewCollapsedEventListener.onSearchViewCollapsed();
 
         }
@@ -84,11 +87,12 @@ public class ArrayAdapterSearchView extends SearchView {
         super.onActionViewCollapsed();
     }
 
-    public interface OnSearchViewCollapsedEventListener{
-         void onSearchViewCollapsed();
+    public interface OnSearchViewCollapsedEventListener {
+        void onSearchViewCollapsed();
     }
 
-    public void setOnSearchViewCollapsedEventListener(OnSearchViewCollapsedEventListener eventListener) {
+    public void setOnSearchViewCollapsedEventListener(
+            OnSearchViewCollapsedEventListener eventListener) {
         mSearchViewCollapsedEventListener = eventListener;
     }
 

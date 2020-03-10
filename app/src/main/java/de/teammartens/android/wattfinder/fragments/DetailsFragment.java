@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import android.text.Html;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -35,6 +33,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import de.teammartens.android.wattfinder.KartenActivity;
 import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.model.ChargeEvent;
@@ -55,21 +55,21 @@ import de.teammartens.android.wattfinder.worker.Utils;
 public class DetailsFragment extends Fragment {
 
 
-    private  final String LOG_TAG = "DetailsFragment";
-    private  final String fAPIUrl = "https://api.goingelectric.de/chargepoints/";
+    private final String LOG_TAG = "DetailsFragment";
+    private final String fAPIUrl = "https://api.goingelectric.de/chargepoints/";
 
-    private  View detailsView;
-    private  LatLng mPos= new LatLng(0,0);
-    private  Integer mID = 0;
-    public  String mTitel = "";
-    private  String mUrl = "";
+    private View detailsView;
+    private LatLng mPos = new LatLng(0, 0);
+    private Integer mID = 0;
+    public String mTitel = "";
+    private String mUrl = "";
     private Saeule S;
     protected View view;
-    private  ViewPager detailImages;
+    private ViewPager detailImages;
 
-    private  LinearLayout pager_indicator;
-    private  ImageView[] dots;
-    private  Context mContext;
+    private LinearLayout pager_indicator;
+    private ImageView[] dots;
+    private Context mContext;
 
 
     @Override
@@ -79,29 +79,30 @@ public class DetailsFragment extends Fragment {
         detailsView = inflater.inflate(R.layout.fragment_details_cards, container, false);
         setRetainInstance(true);
 
-        if(LogWorker.isVERBOSE()&&detailsView==null)LogWorker.d(LOG_TAG,"View is null");
-mContext =this.getContext();
+        if (LogWorker.isVERBOSE() && detailsView == null) LogWorker.d(LOG_TAG, "View is null");
+        mContext = this.getContext();
         View v = detailsView.findViewById(R.id.fab_routing);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + mPos.latitude + "," + mPos.longitude + "?q=" + mPos.latitude + "," + mPos.longitude + "(" + mTitel + ")"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "geo:" + mPos.latitude + "," + mPos.longitude + "?q=" + mPos.latitude + "," + mPos.longitude + "(" + mTitel + ")"));
                 if (intent.resolveActivity(mContext.getPackageManager()) != null) {
                     startActivity(intent);
                 }
             }
         });
 
-            v = detailsView.findViewById(R.id.fab_browser);
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
-                    if (intent.resolveActivity(mContext.getPackageManager()) != null) {
-                        startActivity(intent);
-                    }
+        v = detailsView.findViewById(R.id.fab_browser);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
+                if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+                    startActivity(intent);
                 }
-                });
+            }
+        });
 
 
         /*ImageSwitcher iS = (ImageSwitcher) detailsView.findViewById(R.id.dImage);
@@ -140,12 +141,10 @@ mContext =this.getContext();
     }
 
 
-
-
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         if (detailsView != null) {
-            TextView t = (TextView) detailsView.findViewById(R.id.dSaeulenid);
+            TextView t = detailsView.findViewById(R.id.dSaeulenid);
             if (t != null && !t.getText().equals(mID))
                 holeDetails();
             detailsView.setVisibility(View.VISIBLE);
@@ -163,35 +162,35 @@ mContext =this.getContext();
         }
     }
 
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         AnimationWorker.hide_mapSearch();
         AnimationWorker.hide_fabs();
-        if(S==null)setzeSaeule(SaeulenWorks.getCurrentSaeule());
+        if (S == null) setzeSaeule(SaeulenWorks.getCurrentSaeule());
         load_events();
 
     }
 
-    public void onPause(){
+    public void onPause() {
         super.onPause();
-        View v =detailsView.findViewById(R.id.loadingPanel);
+        View v = detailsView.findViewById(R.id.loadingPanel);
         v.setVisibility(View.VISIBLE);
-        v =detailsView.findViewById(R.id.scrollView);
+        v = detailsView.findViewById(R.id.scrollView);
         v.setVisibility(View.GONE);
     }
 
 
-
     private void holeDetails() {
-        View v =detailsView.findViewById(R.id.loadingPanel);
+        View v = detailsView.findViewById(R.id.loadingPanel);
         v.setVisibility(View.VISIBLE);
-        v =detailsView.findViewById(R.id.scrollView);
+        v = detailsView.findViewById(R.id.scrollView);
         v.setVisibility(View.GONE);
-        TextView t = (TextView) detailsView.findViewById(R.id.dSaeulenid);
-        t.setText("ID"+String.valueOf(mID));
-        String url=fAPIUrl + "?key=" + mContext.getString(R.string.GoingElectric_APIKEY) + "&ge_id="+mID;
-        GeoWorks.movemapPosition(mPos,GeoWorks.DETAIL_ZOOM,"DetailFragment");
-        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "JSONUrl:"+url);
+        TextView t = detailsView.findViewById(R.id.dSaeulenid);
+        t.setText("ID" + mID);
+        String url = fAPIUrl + "?key=" + mContext.getString(
+                R.string.GoingElectric_APIKEY) + "&ge_id=" + mID;
+        GeoWorks.movemapPosition(mPos, GeoWorks.DETAIL_ZOOM, "DetailFragment");
+        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "JSONUrl:" + url);
 
         JsonObjectRequest dRequest = new JsonObjectRequest(Request.Method.GET,
                 url, (String) null, new Response.Listener<JSONObject>() {
@@ -204,126 +203,167 @@ mContext =this.getContext();
 
                         //Response verarbeiten
                         JSONObject jO = jResponse.getJSONArray("chargelocations").getJSONObject(0);
-                        if (LogWorker.isVERBOSE())LogWorker.d(LOG_TAG, "Detail Request erhalten. ID:"+jO.getInt("ge_id"));
+                        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG,
+                                "Detail Request erhalten. ID:" + jO.getInt("ge_id"));
 
-                        mUrl = "http:"+jO.getString("url");
-                        if (LogWorker.isVERBOSE())LogWorker.d(LOG_TAG, "URL:"+mUrl);
+                        mUrl = "http:" + jO.getString("url");
+                        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "URL:" + mUrl);
 
-                        TextView t2 = (TextView) detailsView.findViewById(R.id.dBezeichnung);
+                        TextView t2 = detailsView.findViewById(R.id.dBezeichnung);
                         t2.setText(jO.getString("name"));
-                        mTitel=jO.getString("name");
+                        mTitel = jO.getString("name");
 
                         JSONObject O = jO.getJSONObject("address");
-                        t2 = (TextView) detailsView.findViewById(R.id.dAdresse);
-                        t2.setText(O.getString("street")+KartenActivity.lineSeparator
-                                    +O.getString("postcode")+" "+O.getString("city")+KartenActivity.lineSeparator
-                                    +O.getString("country"));
-                        mTitel+=", "+O.getString("city");
+                        t2 = detailsView.findViewById(R.id.dAdresse);
+                        t2.setText(O.getString("street") + KartenActivity.lineSeparator
+                                + O.getString("postcode") + " " + O.getString(
+                                "city") + KartenActivity.lineSeparator
+                                + O.getString("country"));
+                        mTitel += ", " + O.getString("city");
 
-                        t2 = (TextView) detailsView.findViewById(R.id.dBetreiber_c);
-                        if(!jO.optBoolean("operator",true))detailsView.findViewById(R.id.dBetreiber).setVisibility(View.GONE);else{ t2.setText(jO.optString("operator"));detailsView.findViewById(R.id.dBetreiber).setVisibility(View.VISIBLE);}
+                        t2 = detailsView.findViewById(R.id.dBetreiber_c);
+                        if (!jO.optBoolean("operator", true))
+                            detailsView.findViewById(R.id.dBetreiber).setVisibility(View.GONE);
+                        else {
+                            t2.setText(jO.optString("operator"));
+                            detailsView.findViewById(R.id.dBetreiber).setVisibility(View.VISIBLE);
+                        }
 
 
-                        t2 = (TextView) detailsView.findViewById(R.id.dVerbund_c);
-                        if(!jO.optBoolean("network",true))detailsView.findViewById(R.id.dVerbund).setVisibility(View.GONE);else {t2.setText(jO.optString("network"));detailsView.findViewById(R.id.dVerbund).setVisibility(View.VISIBLE);}
+                        t2 = detailsView.findViewById(R.id.dVerbund_c);
+                        if (!jO.optBoolean("network", true))
+                            detailsView.findViewById(R.id.dVerbund).setVisibility(View.GONE);
+                        else {
+                            t2.setText(jO.optString("network"));
+                            detailsView.findViewById(R.id.dVerbund).setVisibility(View.VISIBLE);
+                        }
 
 
                         O = jO.getJSONObject("cost");
-                        TextView t1 = (TextView) detailsView.findViewById(R.id.dKosten_c);
-                        t2 = (TextView) detailsView.findViewById(R.id.dKosten_b);
+                        TextView t1 = detailsView.findViewById(R.id.dKosten_c);
+                        t2 = detailsView.findViewById(R.id.dKosten_b);
                         detailsView.findViewById(R.id.dKosten).setVisibility(View.VISIBLE);
-                        t1.setVisibility(View.VISIBLE);t2.setVisibility(View.VISIBLE);
-                        if (!O.optBoolean("description_short",true)&&!O.optBoolean("description_long",true)) {
+                        t1.setVisibility(View.VISIBLE);
+                        t2.setVisibility(View.VISIBLE);
+                        if (!O.optBoolean("description_short", true) && !O.optBoolean(
+                                "description_long", true)) {
 
                             detailsView.findViewById(R.id.dKosten).setVisibility(View.GONE);
 
-                        }else {
-                            if (!O.optBoolean("description_short",true)) t1.setVisibility(View.GONE);
+                        } else {
+                            if (!O.optBoolean("description_short", true))
+                                t1.setVisibility(View.GONE);
                             else t1.setText(decodeHTML(O.getString("description_short")));
-                            if (!O.optBoolean("description_long",true)) t2.setVisibility(View.GONE);
+                            if (!O.optBoolean("description_long", true))
+                                t2.setVisibility(View.GONE);
                             else t2.setText(decodeHTML(O.getString("description_long")));
 
                         }
 
-                        CheckBox ct = (CheckBox) detailsView.findViewById(R.id.dfreeParking);
-                        ct.setChecked(O.optBoolean("freeparking",false));
+                        CheckBox ct = detailsView.findViewById(R.id.dfreeParking);
+                        ct.setChecked(O.optBoolean("freeparking", false));
 
 
-                        ct = (CheckBox) detailsView.findViewById(R.id.dfreeCharging);
-                        ct.setChecked(O.optBoolean("freecharging",false));
-                        ct = (CheckBox) detailsView.findViewById(R.id.dVerified);
-                        ct.setChecked(jO.optBoolean("verified",false));
-                        ct = (CheckBox) detailsView.findViewById(R.id.dBarrierefrei);
-                        ct.setChecked(jO.optBoolean("barrierfree",false));
+                        ct = detailsView.findViewById(R.id.dfreeCharging);
+                        ct.setChecked(O.optBoolean("freecharging", false));
+                        ct = detailsView.findViewById(R.id.dVerified);
+                        ct.setChecked(jO.optBoolean("verified", false));
+                        ct = detailsView.findViewById(R.id.dBarrierefrei);
+                        ct.setChecked(jO.optBoolean("barrierfree", false));
 
 
                         JSONArray A = jO.getJSONArray("chargepoints");
-                        t2 = (TextView) detailsView.findViewById(R.id.dStecker_b);
+                        t2 = detailsView.findViewById(R.id.dStecker_b);
                         t2.setText("");
-                        if (A.length()>0) {
-                            for (int n =0;n<A.length();n++) {
-                                O=A.getJSONObject(n);
-                                t2.append(O.optString("count")+"x "+O.optString("type")+" "+O.optString("power")+"kW"+KartenActivity.lineSeparator);
+                        if (A.length() > 0) {
+                            for (int n = 0; n < A.length(); n++) {
+                                O = A.getJSONObject(n);
+                                t2.append(O.optString("count") + "x " + O.optString(
+                                        "type") + " " + O.optString(
+                                        "power") + "kW" + KartenActivity.lineSeparator);
                             }
                             detailsView.findViewById(R.id.dStecker).setVisibility(View.VISIBLE);
-                        }else {
+                        } else {
 
                             detailsView.findViewById(R.id.dStecker).setVisibility(View.GONE);
 
                         }
 
 
-                        t2 = (TextView) detailsView.findViewById(R.id.dHinweise_b);
-                        if(!jO.optBoolean("general_information",true))
-                            detailsView.findViewById(R.id.dHinweise).setVisibility(View.GONE);else{ t2.setText(decodeHTML(jO.optString("general_information")));detailsView.findViewById(R.id.dHinweise).setVisibility(View.VISIBLE);}
-                        t2 = (TextView) detailsView.findViewById(R.id.dPosition_b);
-                        if(!jO.optBoolean("location_description",true))
-                            detailsView.findViewById(R.id.dPosition).setVisibility(View.GONE);else{ t2.setText(decodeHTML(jO.optString("location_description")));detailsView.findViewById(R.id.dPosition).setVisibility(View.VISIBLE);}
-                        t2 = (TextView) detailsView.findViewById(R.id.dLadeweile_b);
-                        if(!jO.optBoolean("ladeweile",true))
-                            detailsView.findViewById(R.id.dLadeweile).setVisibility(View.GONE);else{ t2.setText(decodeHTML(jO.optString("ladeweile")));detailsView.findViewById(R.id.dLadeweile).setVisibility(View.VISIBLE);}
+                        t2 = detailsView.findViewById(R.id.dHinweise_b);
+                        if (!jO.optBoolean("general_information", true))
+                            detailsView.findViewById(R.id.dHinweise).setVisibility(View.GONE);
+                        else {
+                            t2.setText(decodeHTML(jO.optString("general_information")));
+                            detailsView.findViewById(R.id.dHinweise).setVisibility(View.VISIBLE);
+                        }
+                        t2 = detailsView.findViewById(R.id.dPosition_b);
+                        if (!jO.optBoolean("location_description", true))
+                            detailsView.findViewById(R.id.dPosition).setVisibility(View.GONE);
+                        else {
+                            t2.setText(decodeHTML(jO.optString("location_description")));
+                            detailsView.findViewById(R.id.dPosition).setVisibility(View.VISIBLE);
+                        }
+                        t2 = detailsView.findViewById(R.id.dLadeweile_b);
+                        if (!jO.optBoolean("ladeweile", true))
+                            detailsView.findViewById(R.id.dLadeweile).setVisibility(View.GONE);
+                        else {
+                            t2.setText(decodeHTML(jO.optString("ladeweile")));
+                            detailsView.findViewById(R.id.dLadeweile).setVisibility(View.VISIBLE);
+                        }
 
 
-                        t2 = (TextView) detailsView.findViewById(R.id.dStoerung_b);
+                        t2 = detailsView.findViewById(R.id.dStoerung_b);
 
-                        if (!jO.optBoolean("fault_report",true)){
+                        if (!jO.optBoolean("fault_report", true)) {
                             t2.setVisibility(View.GONE);
                             detailsView.findViewById(R.id.dStoerung_c).setVisibility(View.GONE);
                             detailsView.findViewById(R.id.dStoerungTitel).setVisibility(View.GONE);
-                            detailsView.findViewById(R.id.dStoerung).setVisibility(View.GONE);}
-                        else{
+                            detailsView.findViewById(R.id.dStoerung).setVisibility(View.GONE);
+                        } else {
                             O = jO.getJSONObject("fault_report");
-                            t2.setText(getDate(O.optString("created","0"))+": "+KartenActivity.lineSeparator+ decodeHTML(O.optString("description")));
+                            t2.setText(getDate(O.optString("created",
+                                    "0")) + ": " + KartenActivity.lineSeparator + decodeHTML(
+                                    O.optString("description")));
                             t2.setVisibility(View.VISIBLE);
                             detailsView.findViewById(R.id.dStoerung_c).setVisibility(View.VISIBLE);
-                            detailsView.findViewById(R.id.dStoerungTitel).setVisibility(View.VISIBLE);
+                            detailsView.findViewById(R.id.dStoerungTitel).setVisibility(
+                                    View.VISIBLE);
                             detailsView.findViewById(R.id.dStoerung).setVisibility(View.VISIBLE);
                         }
 
 
                         O = jO.getJSONObject("openinghours");
-                        ct = (CheckBox) detailsView.findViewById(R.id.d247);
-                        ct.setChecked(O.optBoolean("24/7",false));
-                        t1 = (TextView) detailsView.findViewById(R.id.dZeiten_z);
-                        t2 = (TextView) detailsView.findViewById(R.id.dZeiten_b);
+                        ct = detailsView.findViewById(R.id.d247);
+                        ct.setChecked(O.optBoolean("24/7", false));
+                        t1 = detailsView.findViewById(R.id.dZeiten_z);
+                        t2 = detailsView.findViewById(R.id.dZeiten_b);
 
-                            if (O.optString("days").isEmpty()) t1.setVisibility(View.GONE);
-                            else {
-                                t1.setVisibility(View.VISIBLE);
-                                JSONObject j2 = O.getJSONObject("days");
+                        if (O.optString("days").isEmpty()) t1.setVisibility(View.GONE);
+                        else {
+                            t1.setVisibility(View.VISIBLE);
+                            JSONObject j2 = O.getJSONObject("days");
 
-                                t1.setText(mContext.getString(R.string.monday)+formatOpening(j2.getString("monday"))+KartenActivity.lineSeparator+
-                                        mContext.getString(R.string.tuesday)+formatOpening(j2.getString("tuesday"))+KartenActivity.lineSeparator+
-                                        mContext.getString(R.string.wednesday)+formatOpening(j2.getString("wednesday"))+KartenActivity.lineSeparator+
-                                        mContext.getString(R.string.thursday)+formatOpening(j2.getString("thursday"))+KartenActivity.lineSeparator+
-                                        mContext.getString(R.string.friday)+formatOpening(j2.getString("friday"))+KartenActivity.lineSeparator+
-                                        mContext.getString(R.string.saturday)+formatOpening(j2.getString("saturday"))+KartenActivity.lineSeparator+
-                                        mContext.getString(R.string.sunday)+formatOpening(j2.getString("sunday")));
-                            }
-                            if (!O.optBoolean("description",true)) t2.setVisibility(View.GONE);
-                            else {t2.setVisibility(View.VISIBLE);
-                             t2.setText(decodeHTML(O.getString("description")));}
-
+                            t1.setText(mContext.getString(R.string.monday) + formatOpening(
+                                    j2.getString("monday")) + KartenActivity.lineSeparator +
+                                    mContext.getString(R.string.tuesday) + formatOpening(
+                                    j2.getString("tuesday")) + KartenActivity.lineSeparator +
+                                    mContext.getString(R.string.wednesday) + formatOpening(
+                                    j2.getString("wednesday")) + KartenActivity.lineSeparator +
+                                    mContext.getString(R.string.thursday) + formatOpening(
+                                    j2.getString("thursday")) + KartenActivity.lineSeparator +
+                                    mContext.getString(R.string.friday) + formatOpening(
+                                    j2.getString("friday")) + KartenActivity.lineSeparator +
+                                    mContext.getString(R.string.saturday) + formatOpening(
+                                    j2.getString("saturday")) + KartenActivity.lineSeparator +
+                                    mContext.getString(R.string.sunday) + formatOpening(
+                                    j2.getString("sunday")));
+                        }
+                        if (!O.optBoolean("description", true)) t2.setVisibility(View.GONE);
+                        else {
+                            t2.setVisibility(View.VISIBLE);
+                            t2.setText(decodeHTML(O.getString("description")));
+                        }
 
 
                         //Retrieve Charge Events
@@ -331,30 +371,26 @@ mContext =this.getContext();
                         load_events();
 
 
-
-
-
                         A = jO.getJSONArray("photos");
                         ImageWorker.resetImages();
-                        RelativeLayout imgPager = (RelativeLayout) detailsView.findViewById(R.id.imgPagerParent);
-                        if (A.length()>0){
+                        RelativeLayout imgPager = detailsView.findViewById(
+                                R.id.imgPagerParent);
+                        if (A.length() > 0) {
                             //ImgCount=A.length();
 
-                            for (int n =0;n<A.length();n++) {
-                                O=A.getJSONObject(n);
-                                ImageWorker.setImgIDs(n,O.getInt("id"));
+                            for (int n = 0; n < A.length(); n++) {
+                                O = A.getJSONObject(n);
+                                ImageWorker.setImgIDs(n, O.getInt("id"));
                                 //ImgIDs[n]=O.getInt("id");
-                                if(LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG,"PhotoId:"+O.getInt("id"));
+                                if (LogWorker.isVERBOSE())
+                                    LogWorker.d(LOG_TAG, "PhotoId:" + O.getInt("id"));
                             }
                             //Bilder nur über WiFi sofort laden, sonst erst auf Aufforderung
                             View v = detailsView.findViewById(R.id.dLoadImages);
-                            if(NetWorker.isWiFi()){
+                            if (NetWorker.isWiFi()) {
                                 initializeWorker();
                                 v.setVisibility(View.GONE);
-                            }
-
-                            else
-                            {
+                            } else {
                                 v.setVisibility(View.VISIBLE);
                                 v = detailsView.findViewById(R.id.d_ImageBack);
                                 v.setVisibility(View.VISIBLE);
@@ -363,7 +399,7 @@ mContext =this.getContext();
                             }
 
                             imgPager.setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             imgPager.setVisibility(View.GONE);
                         }
 
@@ -381,18 +417,19 @@ http://indragni.com/blog/2013/03/31/android-imageswitcher-example/
 
                          */
 
-                        View v =detailsView.findViewById(R.id.loadingPanel);
+                        View v = detailsView.findViewById(R.id.loadingPanel);
                         v.setVisibility(View.INVISIBLE);
-                        v =detailsView.findViewById(R.id.scrollView);
+                        v = detailsView.findViewById(R.id.scrollView);
                         v.setVisibility(View.VISIBLE);
                         //KartenActivity.setMapPadding(detailsView);
                     } else {
-                        Toast.makeText(KartenActivity.getInstance(), "Fehler beim Abrufen der Detailinformation. Bitte nochmal versuchen.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(KartenActivity.getInstance(),
+                                "Fehler beim Abrufen der Detailinformation. Bitte nochmal versuchen.",
+                                Toast.LENGTH_LONG).show();
                         if (LogWorker.isVERBOSE())
                             LogWorker.d(LOG_TAG, "ERROR:" + jResponse.getString("status"));
                     }
-                }catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
@@ -403,7 +440,7 @@ http://indragni.com/blog/2013/03/31/android-imageswitcher-example/
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                LogWorker.d(LOG_TAG,error.getLocalizedMessage());
+                LogWorker.d(LOG_TAG, error.getLocalizedMessage());
 
             }
         });
@@ -413,21 +450,20 @@ http://indragni.com/blog/2013/03/31/android-imageswitcher-example/
 
     }
 
-    public  void resetValues(){
-        TextView t = (TextView) detailsView.findViewById(R.id.dSaeulenid);
+    public void resetValues() {
+        TextView t = detailsView.findViewById(R.id.dSaeulenid);
         t.setText("");
 
     }
 
 
-
-    public  void setzeSaeule(Integer id, LatLng pos, String titel){
+    public void setzeSaeule(Integer id, LatLng pos, String titel) {
         mID = id;
         mPos = pos;
-        mTitel=titel;
+        mTitel = titel;
 
         if (detailsView != null) {
-            TextView t = (TextView) detailsView.findViewById(R.id.dSaeulenid);
+            TextView t = detailsView.findViewById(R.id.dSaeulenid);
             if (t != null && !t.getText().equals(mID))
                 holeDetails();
 
@@ -436,11 +472,11 @@ http://indragni.com/blog/2013/03/31/android-imageswitcher-example/
 
     }
 
-    public void setzeSaeule(Saeule S){
-        if(S!= null&&S.getID()>0) {
+    public void setzeSaeule(Saeule S) {
+        if (S != null && S.getID() > 0) {
             setzeSaeule(S.getID(), S.getPosition(), S.getTitle());
             this.S = S;
-        }else{
+        } else {
             AnimationWorker.show_map();
         }
     }
@@ -449,28 +485,32 @@ http://indragni.com/blog/2013/03/31/android-imageswitcher-example/
 
         View v = detailsView.findViewById(R.id.d_ImageBack);
         v.setVisibility(View.GONE);
-        detailImages = (ViewPager) detailsView.findViewById(R.id.dImagePager);
+        detailImages = detailsView.findViewById(R.id.dImagePager);
         detailImages.setVisibility(View.VISIBLE);
-        pager_indicator = (LinearLayout) detailsView.findViewById(R.id.dImgPagerCountDots);
+        pager_indicator = detailsView.findViewById(R.id.dImgPagerCountDots);
 
         ImageWorker.initImages(false);
 
-        ImageWorker.setImgAdapter(new ImagePagerAdapter(mContext, ImageWorker.getImgBitmaps(false),false));
+        ImageWorker.setImgAdapter(
+                new ImagePagerAdapter(mContext, ImageWorker.getImgBitmaps(false), false));
         detailImages.setAdapter(ImageWorker.imgAdapter);
         detailImages.setCurrentItem(0);
         detailImages.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
 
             }
 
             @Override
             public void onPageSelected(int position) {
                 for (int i = 0; i < ImageWorker.getImgCount(); i++) {
-                    dots[i].setImageDrawable(mContext.getResources().getDrawable(R.drawable.nonselecteditem_dot));
+                    dots[i].setImageDrawable(
+                            mContext.getResources().getDrawable(R.drawable.nonselecteditem_dot));
                 }
 
-                dots[position].setImageDrawable(mContext.getResources().getDrawable(R.drawable.selecteditem_dot));
+                dots[position].setImageDrawable(
+                        mContext.getResources().getDrawable(R.drawable.selecteditem_dot));
                 ImageWorker.setImgIndex(position);
 
             }
@@ -487,16 +527,16 @@ http://indragni.com/blog/2013/03/31/android-imageswitcher-example/
     private void setUiPageViewController() {
         int dotsCount = ImageWorker.getImgCount();
 
-        if(dots==null)dots = new ImageView[5];
+        if (dots == null) dots = new ImageView[5];
 
         for (int i = 0; i < 5; i++) {
-            if(pager_indicator.getChildAt(i)!=null){
+            if (pager_indicator.getChildAt(i) != null) {
                 dots[i] = (ImageView) pager_indicator.getChildAt(i);
 
 
-            }else {
+            } else {
                 dots[i] = new ImageView(mContext);
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
@@ -507,8 +547,9 @@ http://indragni.com/blog/2013/03/31/android-imageswitcher-example/
 
 
             }
-            dots[i].setImageDrawable(mContext.getResources().getDrawable(R.drawable.nonselecteditem_dot));
-            if (i>=dotsCount) dots[i].setVisibility(View.GONE);
+            dots[i].setImageDrawable(
+                    mContext.getResources().getDrawable(R.drawable.nonselecteditem_dot));
+            if (i >= dotsCount) dots[i].setVisibility(View.GONE);
             else dots[i].setVisibility(View.VISIBLE);
         }
 
@@ -516,52 +557,52 @@ http://indragni.com/blog/2013/03/31/android-imageswitcher-example/
     }
 
 
+    public String formatOpening(String s) {
 
-public  String formatOpening(String s){
+        s = s.replace("from ", "");
+        s = s.replace(" till ", "-");
+        s = s.replace("closed", KartenActivity.getInstance().getString(R.string.closed));
+        return s;
+    }
 
-    s=s.replace("from ","");
-    s=s.replace(" till ","-");
-    s=s.replace("closed",KartenActivity.getInstance().getString(R.string.closed));
-    return s;
-}
-    public  void bestaetigen() {
+    public void bestaetigen() {
 
         //Säuelenfunktion bestätigen
     }
 
-    public  String getmTitel() {
+    public String getmTitel() {
         return mTitel;
     }
 
-    public  Integer getmID() {
+    public Integer getmID() {
         return mID;
     }
 
-    private  String getDate(String time) {
-        Long t =0l;
-        if (time!=null)
+    private String getDate(String time) {
+        Long t = 0l;
+        if (time != null)
             t = Long.valueOf(time);
         Calendar cal = Calendar.getInstance(Locale.GERMAN);
-        cal.setTimeInMillis(t*1000);
-        return  DateFormat.format("dd-MM-yyyy", cal).toString();
+        cal.setTimeInMillis(t * 1000);
+        return DateFormat.format("dd-MM-yyyy", cal).toString();
     }
 
-    private  String decodeHTML (String text){
+    private String decodeHTML(String text) {
         if (text != null)
-        return Html.fromHtml(text).toString();
+            return Html.fromHtml(text).toString();
 
         return "";
     }
 
-    private  void load_events(){
-        if(mID>0) {
+    private void load_events() {
+        if (mID > 0) {
             final View eventView = detailsView.findViewById(R.id.dEvents);
-            AnimationWorker.fadeOut(eventView,0);
+            AnimationWorker.fadeOut(eventView, 0);
             String evUrl = "https://wattfinder.de/api/get.php";
             Map<String, String> params = new HashMap<String, String>();
-            params.put("key",KartenActivity.getInstance().getString(R.string.Wattfinder_APIKey));
-            params.put("p","0");
-            params.put("cp",String.valueOf(mID));
+            params.put("key", KartenActivity.getInstance().getString(R.string.Wattfinder_APIKey));
+            params.put("p", "0");
+            params.put("cp", String.valueOf(mID));
 
             JsonObjectRequest pRequest = new JsonObjectRequest(Request.Method.POST,
                     evUrl, new JSONObject(params), new Response.Listener<JSONObject>() {
@@ -570,11 +611,14 @@ public  String formatOpening(String s){
                 @Override
                 public void onResponse(JSONObject jResponse) {
 
-                    if (jResponse.optBoolean("success", false) && jResponse.optInt("count", 0) > 0) {
+                    if (jResponse.optBoolean("success", false) && jResponse.optInt("count",
+                            0) > 0) {
                         try {
                             JSONArray jA = jResponse.getJSONArray("events");
-                            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            ViewGroup parentView = (ViewGroup) detailsView.findViewById(R.id.dEvents_list);
+                            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+                                    Context.LAYOUT_INFLATER_SERVICE);
+                            ViewGroup parentView = detailsView.findViewById(
+                                    R.id.dEvents_list);
                             parentView.removeAllViews();
                             //Sort Entries
                             HashMap<Integer, Long> hmap = new HashMap<Integer, Long>();
@@ -586,11 +630,13 @@ public  String formatOpening(String s){
                             Iterator i = map.keySet().iterator();
                             while (i.hasNext()) {
                                 Integer i1 = (Integer) i.next();
-                                View childLayout = inflater.inflate(R.layout.layout_chargeevent, null);
-                                childLayout.setId((Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1 ? View.generateViewId() : Utils.generateViewId()));
+                                View childLayout = inflater.inflate(R.layout.layout_chargeevent,
+                                        null);
+                                childLayout.setId(
+                                        (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1 ? View.generateViewId() : Utils.generateViewId()));
                                 ChargeEvent CE = new ChargeEvent();
                                 if (CE.extractFromJSON(jA.getJSONObject(i1))) {
-                                    TextView tv = (TextView) childLayout.findViewById(R.id.evDate);
+                                    TextView tv = childLayout.findViewById(R.id.evDate);
                                                /* Date d = new Date();
                                                 d.setTime(CE.getTimestamp());
                                                  */
@@ -607,11 +653,12 @@ public  String formatOpening(String s){
                                     tv.setText(CE.getComment());
 
                                     View v = childLayout.findViewById(R.id.evIconFault);
-                                    if(CE.isIsfault())v.setVisibility(View.VISIBLE);
+                                    if (CE.isIsfault()) v.setVisibility(View.VISIBLE);
 
                                     parentView.addView(childLayout);
                                 } else {
-                                    LogWorker.e("JSON Event Extract", jA.getJSONObject(i1).toString());
+                                    LogWorker.e("JSON Event Extract",
+                                            jA.getJSONObject(i1).toString());
 
                                 }
                             }
@@ -627,7 +674,7 @@ public  String formatOpening(String s){
                 public void onErrorResponse(VolleyError error) {
 
                 }
-            }){
+            }) {
                 @Override
                 public Map<String, String> getHeaders() {
                     HashMap<String, String> headers = new HashMap<String, String>();

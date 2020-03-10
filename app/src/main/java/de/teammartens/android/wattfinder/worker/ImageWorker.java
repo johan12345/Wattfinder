@@ -21,7 +21,7 @@ import de.teammartens.android.wattfinder.model.ImagePagerAdapter;
 public class ImageWorker {
     protected View view;
     private static final String LOG_TAG = "ImageWorker";
-    public static ImagePagerAdapter imgAdapter,imgAdapterHD;
+    public static ImagePagerAdapter imgAdapter, imgAdapterHD;
     private static Bitmap[] ImgBitmaps = new Bitmap[5];
     private static Bitmap[] ImgBitmaps_HD = new Bitmap[5];
     private static Integer[] ImgIDs = new Integer[5];
@@ -46,8 +46,6 @@ public class ImageWorker {
     }
 
 
-
-
     public static void setImgAdapterHD(ImagePagerAdapter imgAdapterHD) {
         ImageWorker.imgAdapterHD = imgAdapterHD;
 
@@ -60,89 +58,88 @@ public class ImageWorker {
 
     public static void setImgIndex(Integer imgIndex) {
         ImgIndex = imgIndex;
-        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "ImgIndex:" + imgIndex+":"+ImgIndex);
+        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "ImgIndex:" + imgIndex + ":" + ImgIndex);
     }
 
-    public static void ladeBild(final int imgID, final boolean HD, final ImagePagerAdapter ipa){
-        if(ImgCount>imgID&&ImgIDs[imgID]>0) {
-    String url = PhotoUrl + "?key=" + KartenActivity.getInstance().getString(R.string.GoingElectric_APIKEY) + "&id=" + ImgIDs[imgID] + "&size=" + (HD ? Size_HD : Size_noHD);
-    if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "PhotoUrl:" + url);
-    ImageRequest iR = new ImageRequest(url,
-            new Response.Listener<Bitmap>() {
-                @Override
-                public void onResponse(Bitmap bitmap) {
-                    if(loading.contains(imgID))loading.remove(imgID);
+    public static void ladeBild(final int imgID, final boolean HD, final ImagePagerAdapter ipa) {
+        if (ImgCount > imgID && ImgIDs[imgID] > 0) {
+            String url = PhotoUrl + "?key=" + KartenActivity.getInstance().getString(
+                    R.string.GoingElectric_APIKEY) + "&id=" + ImgIDs[imgID] + "&size=" + (HD ? Size_HD : Size_noHD);
+            if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "PhotoUrl:" + url);
+            ImageRequest iR = new ImageRequest(url,
+                    new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap bitmap) {
+                            loading.remove(imgID);
 
-                    if (LogWorker.isVERBOSE())
-                        LogWorker.d(LOG_TAG, "PhotoResponse for ID:"+imgID+" " + bitmap.getByteCount() + "Bytes");
-                    if(imgID<ImgBitmaps.length)
-                        ImgBitmaps[imgID] = bitmap;
-                    else
-                        LogWorker.e(LOG_TAG,"IMgBItmap Array IndexOutOfBounds: imgID"+imgID+" ImgBitmaps:"+ImgBitmaps.length);
-
-
-                    if (imgAdapter != null) imgAdapter.updateItem(imgID,bitmap);
-                    else
-                        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Adapter null:");
+                            if (LogWorker.isVERBOSE())
+                                LogWorker.d(LOG_TAG,
+                                        "PhotoResponse for ID:" + imgID + " " + bitmap.getByteCount() + "Bytes");
+                            if (imgID < ImgBitmaps.length)
+                                ImgBitmaps[imgID] = bitmap;
+                            else
+                                LogWorker.e(LOG_TAG,
+                                        "IMgBItmap Array IndexOutOfBounds: imgID" + imgID + " ImgBitmaps:" + ImgBitmaps.length);
 
 
-                    if (HD) {
-                        ImgBitmaps_HD[imgID] = bitmap;
-                        ImgBitmaps[imgID] = ImgBitmaps_HD[imgID];
-                        if (imgAdapterHD != null) imgAdapterHD.updateItem(imgID,bitmap);
-                    }
+                            if (imgAdapter != null) imgAdapter.updateItem(imgID, bitmap);
+                            else if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Adapter null:");
 
 
+                            if (HD) {
+                                ImgBitmaps_HD[imgID] = bitmap;
+                                ImgBitmaps[imgID] = ImgBitmaps_HD[imgID];
+                                if (imgAdapterHD != null) imgAdapterHD.updateItem(imgID, bitmap);
+                            }
 
 
+                        }
+                    }, 0, 0, null,
+                    new Response.ErrorListener() {
+                        public void onErrorResponse(VolleyError error) {
 
+                        }
+                    });
+            if (!loading.contains(imgID)) {
+                KartenActivity.getInstance().addToRequestQueue(iR);
+                loading.add(imgID);
 
-                }
-            }, 0, 0, null,
-            new Response.ErrorListener() {
-                public void onErrorResponse(VolleyError error) {
+            } else if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Already loading:" + imgID);
 
-                }
-            });
-if(!loading.contains(imgID)) {
-    KartenActivity.getInstance().addToRequestQueue(iR);
-    loading.add(imgID);
-
-    }else
-        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Already loading:" + imgID);
-
-}else{
-    if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "not initialized:"+imgID+"/"+ImgCount+" = "+ImgIDs[imgID]);
-}
+        } else {
+            if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG,
+                    "not initialized:" + imgID + "/" + ImgCount + " = " + ImgIDs[imgID]);
+        }
     }
 
 
-    public static void setImgIDs(int position,Integer id) {
+    public static void setImgIDs(int position, Integer id) {
         ImgIDs[position] = id;
         updateImgCount();
     }
 
-    public static void initImages(boolean hd){
+    public static void initImages(boolean hd) {
 
-        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, (ImgIDs!=null?"ImageIds"+ImgIDs[0]+"-"+ImgIDs[1]+"-"+ImgIDs[2]+"-"+ImgIDs[3]+"-"+ImgIDs[4]:" ImgIDs null"));
+        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG,
+                (ImgIDs != null ? "ImageIds" + ImgIDs[0] + "-" + ImgIDs[1] + "-" + ImgIDs[2] + "-" + ImgIDs[3] + "-" + ImgIDs[4] : " ImgIDs null"));
 
-        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "ImageCount"+ImgCount);
+        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "ImageCount" + ImgCount);
         //ImgIndex=0;
         ImgBitmaps = new Bitmap[ImgCount];
         ImgBitmaps_HD = ImgBitmaps;
-        if(getImgCount()>0){
-            ImgBitmaps[0]=null;
-            ImgBitmaps_HD[0]= ImgBitmaps[0];
+        if (getImgCount() > 0) {
+            ImgBitmaps[0] = null;
+            ImgBitmaps_HD[0] = ImgBitmaps[0];
         }
 
-        if (ImgCount>0)ladeBild(0,hd, null);
-        if (ImgCount>1)ladeBild(1,hd, null);
+        if (ImgCount > 0) ladeBild(0, hd, null);
+        if (ImgCount > 1) ladeBild(1, hd, null);
     }
 
-    private static void updateImgCount(){
-        int b =0;
-        for(int a:ImgIDs) if (a>0)b++;
-        ImgCount=b;
+    private static void updateImgCount() {
+        int b = 0;
+        for (int a : ImgIDs) if (a > 0) b++;
+        ImgCount = b;
     }
 
     public static Integer getImgCount() {
@@ -157,21 +154,17 @@ if(!loading.contains(imgID)) {
 
 
     public static Bitmap[] getImgBitmaps(boolean HD) {
-        return (HD? ImgBitmaps_HD : ImgBitmaps);
+        return (HD ? ImgBitmaps_HD : ImgBitmaps);
     }
 
-    public static void resetImages(){
-        ImgIndex=0;
-        ImgCount=0;
-        for (int i=0;i<5;i++){
-            ImgIDs[i]=0;
+    public static void resetImages() {
+        ImgIndex = 0;
+        ImgCount = 0;
+        for (int i = 0; i < 5; i++) {
+            ImgIDs[i] = 0;
         }
 
     }
-
-
-
-
 
 
 }

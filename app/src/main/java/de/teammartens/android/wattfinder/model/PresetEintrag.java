@@ -10,8 +10,6 @@ public class PresetEintrag {
     boolean selected = false;
 
 
-
-
     boolean neu = false;
 
     public PresetEintrag(String titel, String neuertitel, boolean selected) {
@@ -20,6 +18,7 @@ public class PresetEintrag {
 
         this.neu = false;
     }
+
     public PresetEintrag(String titel, String neuertitel, boolean selected, boolean neu) {
         super();
         this.titel = titel;
@@ -36,9 +35,11 @@ public class PresetEintrag {
         this.selected = selected;
 
     }
+
     public String getTitel() {
         return titel;
     }
+
     public void setTitel(String titel) {
         this.titel = titel;
     }
@@ -47,6 +48,7 @@ public class PresetEintrag {
     public boolean isSelected() {
         return selected;
     }
+
     public void setSelected(boolean selected) {
         this.selected = selected;
     }

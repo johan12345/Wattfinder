@@ -1,6 +1,5 @@
 package de.teammartens.android.wattfinder.fragments;
 
-import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import androidx.fragment.app.Fragment;
 import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.model.FilterEintrag;
 import de.teammartens.android.wattfinder.model.mFilterListAdapter;
@@ -25,7 +25,7 @@ import de.teammartens.android.wattfinder.worker.LogWorker;
 public class Filter_carrier_Fragment extends Fragment {
     private static mFilterListAdapter dataAdapter = null;
     private static final String LOG_TAG = "FilterFragmentCarrier";
-    private static final String LISTE= FilterWorks.F_VERBUND;
+    private static final String LISTE = FilterWorks.F_VERBUND;
 
     public Filter_carrier_Fragment() {
         // Required empty public constructor
@@ -43,17 +43,18 @@ public class Filter_carrier_Fragment extends Fragment {
         return inflater.inflate(R.layout.fragment_filter_carrier, container, false);
     }
 
-    public void onStart(){
+    public void onStart() {
         super.onStart();
-        final ListView listView = (ListView) this.getView().findViewById(R.id.filter_liste_carrier);
+        final ListView listView = this.getView().findViewById(R.id.filter_liste_carrier);
 
-        final CheckBox cB = (CheckBox) this.getView().findViewById(R.id.fCarrier_all);
+        final CheckBox cB = this.getView().findViewById(R.id.fCarrier_all);
         cB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG," FilterListe "+LISTE+" BELIEBIG "+b );
-                if(b)FilterWorks.setListeBeliebig(LISTE);
-                if(dataAdapter!=null) {
+                if (LogWorker.isVERBOSE())
+                    LogWorker.d(LOG_TAG, " FilterListe " + LISTE + " BELIEBIG " + b);
+                if (b) FilterWorks.setListeBeliebig(LISTE);
+                if (dataAdapter != null) {
                     dataAdapter.updatefilterListe(FilterWorks.ListeToArrayList(LISTE));
                     dataAdapter.notifyDataSetChanged();
                 }
@@ -71,14 +72,15 @@ public class Filter_carrier_Fragment extends Fragment {
         dataAdapter.setcBeliebig(cB);
         listView.setAdapter(dataAdapter);
     }
-    public void onResume(){
+
+    public void onResume() {
         super.onResume();
 
 
     }
 
-    public static void ladeListe(){
-        if(dataAdapter!=null) {
+    public static void ladeListe() {
+        if (dataAdapter != null) {
             dataAdapter.updatefilterListe(FilterWorks.ListeToArrayList(LISTE));
             dataAdapter.notifyDataSetChanged();
         }

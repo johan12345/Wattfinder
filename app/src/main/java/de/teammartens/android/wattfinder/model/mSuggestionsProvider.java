@@ -45,13 +45,13 @@ public class mSuggestionsProvider extends ContentProvider {
             SearchManager.SUGGEST_COLUMN_QUERY,
             SearchManager.SUGGEST_COLUMN_ICON_1,
             SearchManager.SUGGEST_COLUMN_ICON_2};
-            private static final String LOG_TAG = "Wattfinder Suggestions";
+    private static final String LOG_TAG = "Wattfinder Suggestions";
 
 
-
-    private static GoogleApiClient googleApiClient =null;
+    private static GoogleApiClient googleApiClient = null;
     private PlaceAutocompleteAdapter mAdapter;
-    private static final LatLngBounds centralEur = new LatLngBounds(new LatLng(43.021,-1.582), new LatLng(58.654,18.457));
+    private static final LatLngBounds centralEur = new LatLngBounds(new LatLng(43.021, -1.582),
+            new LatLng(58.654, 18.457));
     private static LatLngBounds mBOUNDS = centralEur;
 
     @Override
@@ -59,37 +59,39 @@ public class mSuggestionsProvider extends ContentProvider {
 
         return null;
     }
+
     @Override
     public boolean onCreate() {
 
         return false;
     }
 
-    public boolean onResume(){
- return registerClient();
+    public boolean onResume() {
+        return registerClient();
 
     }
-        private boolean registerClient(){
 
-            googleApiClient = KartenActivity.getInstance().setupGoogleAPI();
+    private boolean registerClient() {
 
-            if (googleApiClient == null)
-                    return false;
-            else{
-                googleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    public void onConnected(Bundle connectionHint) {
+        googleApiClient = KartenActivity.getInstance().setupGoogleAPI();
+
+        if (googleApiClient == null)
+            return false;
+        else {
+            googleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                public void onConnected(Bundle connectionHint) {
 
 
-                    }
+                }
 
-                    public void onConnectionSuspended(int cause) {
+                public void onConnectionSuspended(int cause) {
 
-                    }
-                });
+                }
+            });
 
-                googleApiClient.connect();
-                return true;
-            }
+            googleApiClient.connect();
+            return true;
+        }
     }
 
     @Override
@@ -98,7 +100,8 @@ public class mSuggestionsProvider extends ContentProvider {
 
         //mBounds um aktuellen Standpunkt setzten zum gewichten der Ergebnisse
         LatLng mPos = GeoWorks.getmyPosition();
-        mBOUNDS = new LatLngBounds( new LatLng(mPos.latitude-0.1,mPos.longitude-0.15), new LatLng(mPos.latitude+0.1,mPos.longitude+0.15));
+        mBOUNDS = new LatLngBounds(new LatLng(mPos.latitude - 0.1, mPos.longitude - 0.15),
+                new LatLng(mPos.latitude + 0.1, mPos.longitude + 0.15));
         String query = selectionArgs[0];
         if (query == null || query.length() == 0) {
 
@@ -115,11 +118,11 @@ public class mSuggestionsProvider extends ContentProvider {
         String contentUri = "content://" + rSuggestionsProvider.AUTHORITY + '/' + SearchManager.SUGGEST_URI_PATH_QUERY;
         Uri uri2 = Uri.parse(contentUri);
 
-        Cursor c = contentResolver.query(uri2, null, null, new String[] { query }, null);
-        if(LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG,"Recent Suggestions: "+ c.getCount());
-        for (String cN : c.getColumnNames() )
-            if(LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG,"Recent Suggestions Columns: "+ cN);
-        while (c.moveToNext()){
+        Cursor c = contentResolver.query(uri2, null, null, new String[]{query}, null);
+        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Recent Suggestions: " + c.getCount());
+        for (String cN : c.getColumnNames())
+            if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Recent Suggestions Columns: " + cN);
+        while (c.moveToNext()) {
 
             Object[] o = new Object[]{new Integer(n), // _id
                     c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1)),
@@ -131,7 +134,9 @@ public class mSuggestionsProvider extends ContentProvider {
                     null};
             n++;
             cursor.addRow(o);
-            if(LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG,"Recent Suggestions query: "+ c.getString(c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY)));
+            if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG,
+                    "Recent Suggestions query: " + c.getString(
+                            c.getColumnIndex(SearchManager.SUGGEST_COLUMN_QUERY)));
 
         }
 
@@ -139,19 +144,20 @@ public class mSuggestionsProvider extends ContentProvider {
         c.close();
 
 
-        if (query.length()>2)
-        try {
-            ArrayList<PlaceAutocomplete> list = getPlaceSuggestions(query);
-            if(list!=null&&list.size()>0)
-                for (PlaceAutocomplete s : list) {
-                 if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Prediction:" + s.description);
+        if (query.length() > 2)
+            try {
+                ArrayList<PlaceAutocomplete> list = getPlaceSuggestions(query);
+                if (list != null && list.size() > 0)
+                    for (PlaceAutocomplete s : list) {
+                        if (LogWorker.isVERBOSE())
+                            LogWorker.d(LOG_TAG, "Prediction:" + s.description);
 
-                 cursor.addRow(createRow(new Integer(n), s));
-                  n++;
-                }
-        } catch (Exception e) {
-            LogWorker.e(LOG_TAG, "Failed to lookup " + query, e);
-        }
+                        cursor.addRow(createRow(new Integer(n), s));
+                        n++;
+                    }
+            } catch (Exception e) {
+                LogWorker.e(LOG_TAG, "Failed to lookup " + query, e);
+            }
 
 
         return cursor;
@@ -176,7 +182,7 @@ public class mSuggestionsProvider extends ContentProvider {
 
     private Object[] createRow(Integer id, PlaceAutocomplete S) {
         Object[] o = new Object[]{};
-        if (googleApiClient!=null||registerClient()) {//nur wenn Client verbunden oder registerclient erfolgreich
+        if (googleApiClient != null || registerClient()) {//nur wenn Client verbunden oder registerclient erfolgreich
 
             // Jetzt ncoh mehr Infos abfragen
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
@@ -188,7 +194,8 @@ public class mSuggestionsProvider extends ContentProvider {
             if (!status.isSuccess()) {
                 Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
                         Toast.LENGTH_SHORT).show();
-                LogWorker.e(LOG_TAG, "Error getting autocomplete prediction API call: " + status.toString());
+                LogWorker.e(LOG_TAG,
+                        "Error getting autocomplete prediction API call: " + status.toString());
                 buffer.release();
                 return null;
             }
@@ -214,12 +221,12 @@ public class mSuggestionsProvider extends ContentProvider {
 
         }
 
-            return o;
+        return o;
 
 
     }
 
-    private ArrayList<PlaceAutocomplete> getPlaceSuggestions( String query) {
+    private ArrayList<PlaceAutocomplete> getPlaceSuggestions(String query) {
         ArrayList resultList = new ArrayList<com.google.android.gms.location.places.ui.PlaceAutocomplete>();
 
         if (googleApiClient != null || registerClient()) {//nur wenn Client verbunden oder registerClient erfolgreich
@@ -227,14 +234,17 @@ public class mSuggestionsProvider extends ContentProvider {
 
             PendingResult<AutocompletePredictionBuffer> result =
                     Places.GeoDataApi.getAutocompletePredictions(googleApiClient, query,
-                            mBOUNDS, new AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE).build());
-            AutocompletePredictionBuffer autocompletePredictions = result.await(60, TimeUnit.SECONDS);
+                            mBOUNDS, new AutocompleteFilter.Builder().setTypeFilter(
+                                    AutocompleteFilter.TYPE_FILTER_GEOCODE).build());
+            AutocompletePredictionBuffer autocompletePredictions = result.await(60,
+                    TimeUnit.SECONDS);
 
             final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
                 Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
                         Toast.LENGTH_SHORT).show();
-                LogWorker.e(LOG_TAG, "Error getting autocomplete prediction API call: " + status.toString());
+                LogWorker.e(LOG_TAG,
+                        "Error getting autocomplete prediction API call: " + status.toString());
                 autocompletePredictions.release();
                 return null;
             }

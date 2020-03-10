@@ -4,8 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
-import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +11,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
 import de.teammartens.android.wattfinder.KartenActivity;
 import de.teammartens.android.wattfinder.R;
 import de.teammartens.android.wattfinder.model.ChargeEvent;
@@ -37,11 +36,10 @@ public class ChargeeventDialog extends DialogFragment {
         ChargeeventDialog frag = new ChargeeventDialog();
         Bundle args = new Bundle();
 
-            args.putInt("id",id);
+        args.putInt("id", id);
         frag.setArguments(args);
         return frag;
     }
-
 
 
     @Override
@@ -52,8 +50,8 @@ public class ChargeeventDialog extends DialogFragment {
         TextView tv = myView.findViewById(R.id.ce_userid);
         String s = KartenActivity.getCEuID().toString();
         tv.setText(s);
-        instance=KartenActivity.getInstance();
-        populateRadioGroup(R.id.ce_plug,R.array.ce_plugs,R.array.ce_plug_values);
+        instance = KartenActivity.getInstance();
+        populateRadioGroup(R.id.ce_plug, R.array.ce_plugs, R.array.ce_plug_values);
 
         RadioGroup rg = myView.findViewById(R.id.ce_plug);
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -61,14 +59,14 @@ public class ChargeeventDialog extends DialogFragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 event.setPlug(group.findViewById(checkedId).getTag().toString());
                 TextView tv = myView.findViewById(R.id.ce_plug_text);
-                tv.setText(instance.getString(R.string.filterSteckerTitel)+event.getPlug());
+                tv.setText(instance.getString(R.string.filterSteckerTitel) + event.getPlug());
                 group.setVisibility(View.GONE);
                 tv.setVisibility(View.VISIBLE);
                 tv = myView.findViewById(R.id.ce_comment);
                 tv.setText(event.getComment());
                 tv.setVisibility(View.VISIBLE);
                 SharedPreferences sharedPreferences = instance.getPreferences(Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString(sP_plug,event.getPlug()).commit();
+                sharedPreferences.edit().putString(sP_plug, event.getPlug()).commit();
             }
         });
 
@@ -79,7 +77,7 @@ public class ChargeeventDialog extends DialogFragment {
                 View rv = myView.findViewById(R.id.ce_plug);
                 v.setVisibility(View.GONE);
                 rv.setVisibility(View.VISIBLE);
-                }
+            }
         });
 
 
@@ -87,16 +85,17 @@ public class ChargeeventDialog extends DialogFragment {
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                event.setReason(Integer.parseInt(group.findViewById(checkedId).getTag().toString()));
+                event.setReason(
+                        Integer.parseInt(group.findViewById(checkedId).getTag().toString()));
                 TextView tv = myView.findViewById(R.id.ce_result_text);
-                tv.setText(instance.getString(R.string.ce_result_title)+event.getReasonString());
+                tv.setText(instance.getString(R.string.ce_result_title) + event.getReasonString());
                 group.setVisibility(View.GONE);
                 tv.setVisibility(View.VISIBLE);
-                if(event.getReason()>10)
+                if (event.getReason() > 10)
                     show_result_option();
-                else
-                    if(!event.getPlug().trim().isEmpty()) myView.findViewById(R.id.ce_comment).setVisibility(View.VISIBLE);
-                    else myView.findViewById(R.id.ce_plug).setVisibility(View.VISIBLE);
+                else if (!event.getPlug().trim().isEmpty())
+                    myView.findViewById(R.id.ce_comment).setVisibility(View.VISIBLE);
+                else myView.findViewById(R.id.ce_plug).setVisibility(View.VISIBLE);
             }
         });
 
@@ -126,9 +125,10 @@ public class ChargeeventDialog extends DialogFragment {
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                event.setReason(Integer.parseInt(group.findViewById(checkedId).getTag().toString()));
+                event.setReason(
+                        Integer.parseInt(group.findViewById(checkedId).getTag().toString()));
                 TextView tv = myView.findViewById(R.id.ce_result_text);
-                tv.setText(instance.getString(R.string.ce_result_title)+event.getReasonString());
+                tv.setText(instance.getString(R.string.ce_result_title) + event.getReasonString());
                 group.setVisibility(View.GONE);
                 tv.setVisibility(View.VISIBLE);
             }
@@ -165,11 +165,12 @@ public class ChargeeventDialog extends DialogFragment {
         tv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
+                if (!hasFocus) {
                     TextView tv = (TextView) v;
                     event.setNickname(tv.getText().toString());
-                    SharedPreferences sharedPreferences = instance.getPreferences(Context.MODE_PRIVATE);
-                    sharedPreferences.edit().putString(sP_nickname,event.getNickname()).commit();
+                    SharedPreferences sharedPreferences = instance.getPreferences(
+                            Context.MODE_PRIVATE);
+                    sharedPreferences.edit().putString(sP_nickname, event.getNickname()).commit();
                 }
             }
         });
@@ -177,10 +178,10 @@ public class ChargeeventDialog extends DialogFragment {
 
         event = new ChargeEvent();
         SharedPreferences sharedPreferences = instance.getPreferences(Context.MODE_PRIVATE);
-        event.setNickname(sharedPreferences.getString(sP_nickname,""));
+        event.setNickname(sharedPreferences.getString(sP_nickname, ""));
 
         tv = myView.findViewById(R.id.ce_nickname);
-        if(event.getNickname().trim().isEmpty()){
+        if (event.getNickname().trim().isEmpty()) {
             tv.setText(event.getNickname());
         }
 
@@ -190,9 +191,9 @@ public class ChargeeventDialog extends DialogFragment {
         tv = myView.findViewById(R.id.ce_result_success);
         tv.performClick();
 
-        event.setPlug(sharedPreferences.getString(sP_plug,""));
+        event.setPlug(sharedPreferences.getString(sP_plug, ""));
 
-        if(!event.getPlug().trim().isEmpty()) {
+        if (!event.getPlug().trim().isEmpty()) {
             rg = myView.findViewById(R.id.ce_plug);
             if (rg != null) {
                 for (int i = 0; i < rg.getChildCount(); i++) {
@@ -208,50 +209,48 @@ public class ChargeeventDialog extends DialogFragment {
         return myView;
     }
 
-    private void show_result_option(){
-            // wenn nicht success dann zeige Auswahl der Begründung
-            RadioGroup rg = myView.findViewById(R.id.ce_result_option);
+    private void show_result_option() {
+        // wenn nicht success dann zeige Auswahl der Begründung
+        RadioGroup rg = myView.findViewById(R.id.ce_result_option);
 
-            if(event.getReason()>99) {
-                if (event.getReason() > 199)
-                    populateRadioGroup(rg, R.array.ce_result_others,R.array.ce_result_others_values);
-                else
-                    populateRadioGroup(rg,R.array.ce_result_error,R.array.ce_result_error_values);
-                rg.setVisibility(View.VISIBLE);
-            }else rg.setVisibility(View.GONE);
+        if (event.getReason() > 99) {
+            if (event.getReason() > 199)
+                populateRadioGroup(rg, R.array.ce_result_others, R.array.ce_result_others_values);
+            else
+                populateRadioGroup(rg, R.array.ce_result_error, R.array.ce_result_error_values);
+            rg.setVisibility(View.VISIBLE);
+        } else rg.setVisibility(View.GONE);
 
     }
-
-
 
 
     protected void onPrepareDialog(int id, Dialog dialog) {
 
     }
 
-    private void populateRadioGroup(Integer rgId,Integer textArray){
-        populateRadioGroup(rgId,textArray,-1);
+    private void populateRadioGroup(Integer rgId, Integer textArray) {
+        populateRadioGroup(rgId, textArray, -1);
     }
 
 
-    private void populateRadioGroup(Integer rgId,Integer textArray,Integer tagArray){
-        RadioGroup rg = (RadioGroup) myView.findViewById(rgId);
-        populateRadioGroup(rg,textArray,tagArray);
+    private void populateRadioGroup(Integer rgId, Integer textArray, Integer tagArray) {
+        RadioGroup rg = myView.findViewById(rgId);
+        populateRadioGroup(rg, textArray, tagArray);
     }
 
-    private void populateRadioGroup(RadioGroup rg,Integer textArray,Integer tagArray){
+    private void populateRadioGroup(RadioGroup rg, Integer textArray, Integer tagArray) {
         rg.removeAllViews();
         RadioButton rb = new RadioButton(this.getContext());
         String[] PlugList = instance.getResources().getStringArray(textArray);
         String[] PlugValueList = new String[12];
-        if(tagArray>0)PlugValueList = instance.getResources().getStringArray(tagArray);
+        if (tagArray > 0) PlugValueList = instance.getResources().getStringArray(tagArray);
 
         for (int i = 0; i < PlugList.length; i++) {
             rb = new RadioButton(this.getContext());
             rb.setId(generateViewId());
-            rb.setText((String) PlugList[i]);
-            if(tagArray>0)rb.setTag((String) PlugValueList[i]);
-            rg.addView(rb,i);
+            rb.setText(PlugList[i]);
+            if (tagArray > 0) rb.setTag(PlugValueList[i]);
+            rg.addView(rb, i);
         }
     }
 

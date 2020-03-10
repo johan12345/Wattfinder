@@ -25,7 +25,7 @@ import static de.teammartens.android.wattfinder.fragments.Filter_Presets_Fragmen
  */
 
 public class PresetAdapter extends ArrayAdapter<PresetEintrag> {
-    private static final String LOG_TAG="PRESET_ADAPTER";
+    private static final String LOG_TAG = "PRESET_ADAPTER";
     private ArrayList<PresetEintrag> filterListe;
     private Context mContext;
 
@@ -36,10 +36,10 @@ public class PresetAdapter extends ArrayAdapter<PresetEintrag> {
         this.filterListe = new ArrayList<PresetEintrag>();
 
         this.filterListe.addAll(filterListe);
-        mContext=context;
+        mContext = context;
     }
 
-    public void updateListe(ArrayList<PresetEintrag> filterListe){
+    public void updateListe(ArrayList<PresetEintrag> filterListe) {
         this.filterListe = new ArrayList<PresetEintrag>();
         this.filterListe.addAll(filterListe);
         notifyDataSetChanged();
@@ -59,7 +59,7 @@ public class PresetAdapter extends ArrayAdapter<PresetEintrag> {
 
         ViewHolder holder = null;
         //Log.v("ConvertView", String.valueOf(position));
-        if(position<filterListe.size()) {
+        if (position < filterListe.size()) {
             final PresetEintrag filterEintrag = filterListe.get(position);
 
             if (convertView == null) {
@@ -69,19 +69,20 @@ public class PresetAdapter extends ArrayAdapter<PresetEintrag> {
                 convertView = vi.inflate(R.layout.filterlisteneintrag_preset, null);
 
                 holder = new ViewHolder();
-                holder.presetedit = (ImageView) convertView.findViewById(R.id.preset_action_edit);
-                holder.presetname = (RadioButton) convertView.findViewById(R.id.preset_checkBox1);
+                holder.presetedit = convertView.findViewById(R.id.preset_action_edit);
+                holder.presetname = convertView.findViewById(R.id.preset_checkBox1);
 
                 holder.presetname.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(LogWorker.isVERBOSE())LogWorker.d(LOG_TAG,"ItemClick: "+filterEintrag.getTitel());
-                        if(!filterEintrag.isSelected())filterEintrag.setSelected(true);
+                        if (LogWorker.isVERBOSE())
+                            LogWorker.d(LOG_TAG, "ItemClick: " + filterEintrag.getTitel());
+                        if (!filterEintrag.isSelected()) filterEintrag.setSelected(true);
                         FilterWorks.loadPresets(filterEintrag.getTitel());
                         Filter_Presets_Fragment.ladeListe();
                         //FilterFragment.updatePagerChild();
                         //direkt schliessen statt done-button
-                        if(AnimationWorker.smartFilter)SmartFilterFragment.hide_presets();
+                        if (AnimationWorker.smartFilter) SmartFilterFragment.hide_presets();
                         else FilterFragment.hide_presets();
                     }
                 });
@@ -106,7 +107,8 @@ public class PresetAdapter extends ArrayAdapter<PresetEintrag> {
             holder.presetname.setText(filterEintrag.getTitel());
             holder.presetname.setChecked(filterEintrag.isSelected());
 
-            if (filterEintrag.getTitel().equals(mContext.getString(R.string.filter_standardprofil))) {
+            if (filterEintrag.getTitel().equals(
+                    mContext.getString(R.string.filter_standardprofil))) {
                 holder.presetedit.setVisibility(View.GONE);
             } else {
 
@@ -119,7 +121,6 @@ public class PresetAdapter extends ArrayAdapter<PresetEintrag> {
         }
         return convertView;
     }
-
 
 
 }

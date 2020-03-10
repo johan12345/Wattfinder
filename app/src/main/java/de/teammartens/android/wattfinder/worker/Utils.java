@@ -25,7 +25,7 @@ public class Utils {
      * @return a generated ID value
      */
     public static int generateViewId() {
-        for (;;) {
+        for (; ; ) {
             final int result = sNextGeneratedId.get();
             // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
             int newValue = result + 1;
@@ -38,16 +38,18 @@ public class Utils {
 
     public static String createDate(long timestamp) {
         Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(timestamp*1000);
+        c.setTimeInMillis(timestamp * 1000);
         Date d = c.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.GERMANY);
         return sdf.format(d);
     }
 
-    public static String createDate() { return createDate(System.currentTimeMillis()/1000);}
+    public static String createDate() {
+        return createDate(System.currentTimeMillis() / 1000);
+    }
 
 
-        public static HashMap sortByValues(HashMap map) {
+    public static HashMap sortByValues(HashMap map) {
         List list = new LinkedList(map.entrySet());
         // Defined Custom Comparator here
 
@@ -61,7 +63,7 @@ public class Utils {
         // Here I am copying the sorted list in HashMap
         // using LinkedHashMap to preserve the insertion order
         HashMap sortedHashMap = new LinkedHashMap();
-        for (Iterator it = list.iterator(); it.hasNext();) {
+        for (Iterator it = list.iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             sortedHashMap.put(entry.getKey(), entry.getValue());
         }
@@ -78,21 +80,6 @@ public class Utils {
             return -1;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

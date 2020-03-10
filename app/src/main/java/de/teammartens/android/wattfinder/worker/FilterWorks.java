@@ -20,7 +20,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,7 +32,6 @@ import de.teammartens.android.wattfinder.model.PresetEintrag;
 
 //import org.acra.ACRA;
 //import org.acra.ErrorReporter;
-
 
 
 /**
@@ -89,7 +87,8 @@ public class FilterWorks {
 
         SharedPreferences sPref = KartenActivity.sharedPref;
         if (PRESET == null)
-            PRESET = sPref.getString("currentPreset", KartenActivity.getInstance().getString(R.string.filter_standardprofil));
+            PRESET = sPref.getString("currentPreset",
+                    KartenActivity.getInstance().getString(R.string.filter_standardprofil));
         if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "PRESET:" + PRESET);
         if (PRESET.isEmpty())
             PRESET = KartenActivity.getInstance().getString(R.string.filter_standardprofil);
@@ -119,18 +118,18 @@ public class FilterWorks {
         verbund = sPref.getStringSet(PRESET + "VERBUND", new HashSet<String>());
 
 
-
         karten = sPref.getStringSet(PRESET + "KARTEN", new HashSet<String>());
         if (LogWorker.isVERBOSE())
             LogWorker.d(LOG_TAG, "Karten aus DB geladen:" + karten.toString());
         //convert2API();
 
 
-        f_TIMESTAMP = sPref.getLong("fTimestamp",0);
+        f_TIMESTAMP = sPref.getLong("fTimestamp", 0);
         if (!filter_initialized()) {
             stecker_verfuegbar_API = sPref.getStringSet("STECKER_API", new HashSet<String>());
 
-            karten_verfuegbar_API = deserialize_karten(sPref.getStringSet("KARTEN_API", new HashSet<String>()));
+            karten_verfuegbar_API = deserialize_karten(
+                    sPref.getStringSet("KARTEN_API", new HashSet<String>()));
 
             verbund_verfuegbar_API = sPref.getStringSet("VERBUND_API", new HashSet<String>());
         }
@@ -143,7 +142,7 @@ public class FilterWorks {
     */
     public static void refresh_filterlisten_API() {
         if ((System.currentTimeMillis() / 1000 - f_TIMESTAMP) > f_OUTDATED ||
-                !filter_initialized() || NetWorker.getNetworkQuality()>1) {
+                !filter_initialized() || NetWorker.getNetworkQuality() > 1) {
 
             if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Refresh Filterlisten API");
             filter_API_request(F_STECKER);
@@ -151,41 +150,43 @@ public class FilterWorks {
             SaeulenWorks.checkMarkerCache("ladefilterAPI-nicht nötig");
     }
 
-    public static void filter_API_request(final String Liste){
+    public static void filter_API_request(final String Liste) {
         SharedPreferences sPref = KartenActivity.sharedPref;
-        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Lade Filterlisten API - "+Liste);
-        String params = "key=" + KartenActivity.getInstance().getString(R.string.GoingElectric_APIKEY);
-        String fAPIUrl="";
+        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Lade Filterlisten API - " + Liste);
+        String params = "key=" + KartenActivity.getInstance().getString(
+                R.string.GoingElectric_APIKEY);
+        String fAPIUrl = "";
         Set<String> sp_Cache = new HashSet<String>();
         switch (Liste) {
             case F_STECKER:
                 fAPIUrl = fAPIUrl_plugs;
-              //  sp_Cache = sPref.getStringSet("STECKER_API",new HashSet<String>());
+                //  sp_Cache = sPref.getStringSet("STECKER_API",new HashSet<String>());
 
                 break;
             case F_VERBUND:
                 fAPIUrl = fAPIUrl_networks;
-               // sp_Cache = sPref.getStringSet("VERBUND_API",new HashSet<String>());
+                // sp_Cache = sPref.getStringSet("VERBUND_API",new HashSet<String>());
 
                 break;
             case F_KARTEN:
                 fAPIUrl = fAPIUrl_cards;
-               // sp_Cache = sPref.getStringSet("KARTEN_API",new HashSet<String>());
+                // sp_Cache = sPref.getStringSet("KARTEN_API",new HashSet<String>());
 
                 break;
         }
-    //    final Set<String> sp_CacheF = sp_Cache;
+        //    final Set<String> sp_CacheF = sp_Cache;
         final Long requestTimeStart = System.currentTimeMillis();
-        JsonObjectRequest filterReq = new JsonObjectRequest(Request.Method.GET, fAPIUrl + "?" + params, (String) null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest filterReq = new JsonObjectRequest(Request.Method.GET,
+                fAPIUrl + "?" + params, (String) null, new Response.Listener<JSONObject>() {
             @Override
 
             public void onResponse(JSONObject response) {
-                if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "FilterAPIResponse " +Liste);
+                if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "FilterAPIResponse " + Liste);
                 //string=fixEncoding(string);
-               if ((System.currentTimeMillis() - requestTimeStart)>5000){
-                   NetWorker.setNetworkQuality(1);
-               }
-                if ((System.currentTimeMillis() - requestTimeStart)<2000){
+                if ((System.currentTimeMillis() - requestTimeStart) > 5000) {
+                    NetWorker.setNetworkQuality(1);
+                }
+                if ((System.currentTimeMillis() - requestTimeStart) < 2000) {
                     NetWorker.rehabilateNetworkQuality();
                 }
                 try {
@@ -193,38 +194,41 @@ public class FilterWorks {
                     String status = response.getString("status");
                     Set<String> listeT = new HashSet<String>();
                     Set<String> listeAPI_hs = new HashSet<String>();
-                    HashMap<Integer,String> listeAPI_hm = new HashMap<Integer,String>();
+                    HashMap<Integer, String> listeAPI_hm = new HashMap<Integer, String>();
                     JSONArray JSON_LISTE = response.getJSONArray("result");
                     final int Listenlaenge = JSON_LISTE.length();
                     if (LogWorker.isVERBOSE())
-                        LogWorker.d(LOG_TAG,"FilterAPIRq "+Liste + ": "+ Listenlaenge + " Einträge gefunden");
+                        LogWorker.d(LOG_TAG,
+                                "FilterAPIRq " + Liste + ": " + Listenlaenge + " Einträge gefunden");
                     if (Listenlaenge > 0) {
                         f_TIMESTAMP = System.currentTimeMillis() / 1000;
 
 
-                        if(Liste==F_KARTEN){
+                        if (Liste == F_KARTEN) {
 
                             JSONObject jO = new JSONObject();
                             for (int i = 0; i < Listenlaenge; i++) {
                                 jO = JSON_LISTE.getJSONObject(i);
                                 listeAPI_hm.put(jO.getInt("card_id"), jO.getString("name"));
 
-                              //  if (LogWorker.isVERBOSE())  LogWorker.d(LOG_TAG, "Karte "+(i+1)+"/"+Listenlaenge+":" + jO.getString("name"));
+                                //  if (LogWorker.isVERBOSE())  LogWorker.d(LOG_TAG, "Karte "+(i+1)+"/"+Listenlaenge+":" + jO.getString("name"));
                             }
-                            if (listeAPI_hm.size()<Listenlaenge){
-                                if (LogWorker.isVERBOSE())  LogWorker.d(LOG_TAG, "Liste Karten zu kurz!!!");
+                            if (listeAPI_hm.size() < Listenlaenge) {
+                                if (LogWorker.isVERBOSE())
+                                    LogWorker.d(LOG_TAG, "Liste Karten zu kurz!!!");
                                 filter_API_request(F_KARTEN);
                             }
-                            if(LogWorker.isVERBOSE())LogWorker.d(LOG_TAG,listeAPI_hm.size() + " gespeichert");
+                            if (LogWorker.isVERBOSE())
+                                LogWorker.d(LOG_TAG, listeAPI_hm.size() + " gespeichert");
 
-                        }
-                        else{
+                        } else {
 
                             for (int i = 0; i < Listenlaenge; i++) {
                                 listeAPI_hs.add(JSON_LISTE.getString(i));
                                 // if ( LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Verbund:" + Verbund.getString(i));
                             }
-                            if(LogWorker.isVERBOSE())LogWorker.d(LOG_TAG,listeAPI_hs.size() + " gespeichert");
+                            if (LogWorker.isVERBOSE())
+                                LogWorker.d(LOG_TAG, listeAPI_hs.size() + " gespeichert");
 
 
                         }
@@ -262,7 +266,7 @@ public class FilterWorks {
 
                     } else {
                         if (LogWorker.isVERBOSE())
-                            LogWorker.e(LOG_TAG, "Leere Antwort !!! API ReQUest "+ Liste);
+                            LogWorker.e(LOG_TAG, "Leere Antwort !!! API ReQUest " + Liste);
                     }
 
                 } catch (JSONException e) {
@@ -276,33 +280,33 @@ public class FilterWorks {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                    NetWorker.setNetworkQuality(0);
-                    switch (Liste) {
-                        case F_STECKER:
-                            filter_API_request(F_VERBUND);
-                            break;
-                        case F_VERBUND:
-                            filter_API_request(F_KARTEN);
-                            break;
-                        case F_KARTEN:
-                            break;
-                    }
+                NetWorker.setNetworkQuality(0);
+                switch (Liste) {
+                    case F_STECKER:
+                        filter_API_request(F_VERBUND);
+                        break;
+                    case F_VERBUND:
+                        filter_API_request(F_KARTEN);
+                        break;
+                    case F_KARTEN:
+                        break;
+                }
 
-                NetWorker.handleError(error, NetWorker.TASK_FILTER,Liste);
+                NetWorker.handleError(error, NetWorker.TASK_FILTER, Liste);
             }
 
         });
 
         /*Request nur starten wenn Netzwerkverbindung einigermaßen gut ist, sonst nehemen wir die gespeicherten*/
 
-        if(!filter_initialized()||NetWorker.getNetworkQuality()>1||(NetWorker.getNetworkQuality()==1&&(System.currentTimeMillis()/1000 - f_TIMESTAMP)>f_OUTDATED) ){
+        if (!filter_initialized() || NetWorker.getNetworkQuality() > 1 || (NetWorker.getNetworkQuality() == 1 && (System.currentTimeMillis() / 1000 - f_TIMESTAMP) > f_OUTDATED)) {
 
             //Wenn shcon irgendwelche Listen da sind dann begrenze de Versuche um nicht zuviel Netzwerkkapazität zu nehmen
-            if (filter_initialized()&&NetWorker.getNetworkQuality()<3)
-                filterReq.setRetryPolicy(new DefaultRetryPolicy(5000, 1,1));
-         KartenActivity.getInstance().addToRequestQueue(filterReq);
-         KartenActivity.incAPI_RQ_Count();}
-        else {
+            if (filter_initialized() && NetWorker.getNetworkQuality() < 3)
+                filterReq.setRetryPolicy(new DefaultRetryPolicy(5000, 1, 1));
+            KartenActivity.getInstance().addToRequestQueue(filterReq);
+            KartenActivity.incAPI_RQ_Count();
+        } else {
             switch (Liste) {
                 case F_STECKER:
 
@@ -313,20 +317,22 @@ public class FilterWorks {
                     filter_API_request(F_KARTEN);
                     break;
                 case F_KARTEN:
-                    
+
                     break;
             }
         }
 
 
     }
+
     /*
     Filtereinstellungen speichern
      */
     public static void filter_speichern() {
 
         //nicht specihern wenn neues Profil drin steht
-        if (PRESET == null || PRESET.equals(KartenActivity.getInstance().getString(R.string.filter_neuesprofil)) || PRESET.isEmpty())
+        if (PRESET == null || PRESET.equals(KartenActivity.getInstance().getString(
+                R.string.filter_neuesprofil)) || PRESET.isEmpty())
             return;
 
 
@@ -349,7 +355,8 @@ public class FilterWorks {
         editor.putStringSet("PRESETS", presets);
         if (!editor.commit()) {
 
-            Toast.makeText(KartenActivity.getInstance(), R.string.SaveFilterError, Toast.LENGTH_LONG).show();
+            Toast.makeText(KartenActivity.getInstance(), R.string.SaveFilterError,
+                    Toast.LENGTH_LONG).show();
             if (LogWorker.isVERBOSE())
                 LogWorker.e(LOG_TAG, "FEHLER: Filter für Profil " + PRESET + " nicht gespeichert.");
 
@@ -358,10 +365,12 @@ public class FilterWorks {
             LogWorker.d(LOG_TAG, "Filter für Profil " + PRESET + " gespeichert.");
         if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "FilterStecker:" + stecker.toString());
         if (LogWorker.isVERBOSE()) {
-            Set<String> steckTEST = KartenActivity.sharedPref.getStringSet(PRESET + "STECKER", new HashSet<String>());
+            Set<String> steckTEST = KartenActivity.sharedPref.getStringSet(PRESET + "STECKER",
+                    new HashSet<String>());
             if (LogWorker.isVERBOSE())
                 LogWorker.d(LOG_TAG, "Stecker in DB gespeichert:" + steckTEST.toString());
-            Set<String> KartenTEST = KartenActivity.sharedPref.getStringSet(PRESET + "KARTEN", new HashSet<String>());
+            Set<String> KartenTEST = KartenActivity.sharedPref.getStringSet(PRESET + "KARTEN",
+                    new HashSet<String>());
             if (LogWorker.isVERBOSE())
                 LogWorker.d(LOG_TAG, "KARTEN in DB gespeichert:" + KartenTEST.toString());
         }
@@ -370,7 +379,7 @@ public class FilterWorks {
     }
 
 
-    public static void filter_liste_speichern(){
+    public static void filter_liste_speichern() {
         SharedPreferences.Editor editor = KartenActivity.sharedPref.edit();
 
         editor.putStringSet("STECKER_API", stecker_verfuegbar_API);
@@ -378,22 +387,24 @@ public class FilterWorks {
         editor.putStringSet("KARTEN_API", serialize_karten());
         if (!editor.commit()) {
 
-            Toast.makeText(KartenActivity.getInstance(), R.string.SaveFilterError, Toast.LENGTH_LONG).show();
+            Toast.makeText(KartenActivity.getInstance(), R.string.SaveFilterError,
+                    Toast.LENGTH_LONG).show();
             if (LogWorker.isVERBOSE())
                 LogWorker.e(LOG_TAG, "FEHLER: FilterLISTEN nicht gespeichert.");
 
-        }    }
+        }
+    }
 
     /*
     Helper um karten_API-available in den sharedPref speichern zu können
     */
 
-    private static HashSet<String> serialize_karten(){
+    private static HashSet<String> serialize_karten() {
         HashSet<String> hs = new HashSet<String>();
-        if(karten_verfuegbar_API!=null && karten_verfuegbar_API.size()>0)
-        for (Map.Entry<Integer, String> e : karten_verfuegbar_API.entrySet()) {
-            hs.add(e.getKey()+"||"+e.getValue());
-        }
+        if (karten_verfuegbar_API != null && karten_verfuegbar_API.size() > 0)
+            for (Map.Entry<Integer, String> e : karten_verfuegbar_API.entrySet()) {
+                hs.add(e.getKey() + "||" + e.getValue());
+            }
 
         return hs;
     }
@@ -402,14 +413,14 @@ public class FilterWorks {
     Helper um karten_API-available in den sharedPref speichern zu können
     */
 
-    private static HashMap<Integer,String> deserialize_karten(Set<String> liste_karten){
-        HashMap<Integer,String> hm= new HashMap<Integer,String>();
-        if (liste_karten!=null && liste_karten.size()>0)
-        for (String l:liste_karten
-             ) {
-            String[] split = l.split("||");
-            hm.put(Integer.getInteger(split[0]),split[1]);
-        }
+    private static HashMap<Integer, String> deserialize_karten(Set<String> liste_karten) {
+        HashMap<Integer, String> hm = new HashMap<Integer, String>();
+        if (liste_karten != null && liste_karten.size() > 0)
+            for (String l : liste_karten
+            ) {
+                String[] split = l.split("||");
+                hm.put(Integer.getInteger(split[0]), split[1]);
+            }
 
         return hm;
     }
@@ -420,12 +431,13 @@ public class FilterWorks {
     public static boolean setze_filter(Integer F, Boolean Value) {
 
 
-            filter.set(F, Value);
+        filter.set(F, Value);
 
-            if (LogWorker.isVERBOSE())
-                LogWorker.d(LOG_TAG, "Filter" + F + "(" + FilterInt2StrHelper(F) + ") gesetzt: " + filter.get(F));
-            filter_speichern();
-            SaeulenWorks.checkMarkerCache("setze Filter " + FilterInt2StrHelper(F));
+        if (LogWorker.isVERBOSE())
+            LogWorker.d(LOG_TAG,
+                    "Filter" + F + "(" + FilterInt2StrHelper(F) + ") gesetzt: " + filter.get(F));
+        filter_speichern();
+        SaeulenWorks.checkMarkerCache("setze Filter " + FilterInt2StrHelper(F));
 
         return filter.get(F);
 
@@ -469,35 +481,39 @@ public class FilterWorks {
 
     public static int setze_power(Integer progress) {
 
-        if(filter_minpower != F_POWER_VALUE[progress]){
+        if (filter_minpower != F_POWER_VALUE[progress]) {
             filter_minpower = F_POWER_VALUE[progress];
-        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Filter POWER gesetzt: " + filter_minpower);
-        filter_speichern();}
+            if (LogWorker.isVERBOSE())
+                LogWorker.d(LOG_TAG, "Filter POWER gesetzt: " + filter_minpower);
+            filter_speichern();
+        }
         SaeulenWorks.checkMarkerCache("Filter Power:" + filter_minpower);
         return filter_minpower;
 
 
     }
 
-    public static void setze_power_fastcharge(boolean fast){
-        if (fast){
+    public static void setze_power_fastcharge(boolean fast) {
+        if (fast) {
             setze_power(5);
-        }else{
+        } else {
 
-            if (listenlaenge(F_STECKER)>0&&!lese_liste(F_STECKER,"Schuko")){
+            if (listenlaenge(F_STECKER) > 0 && !lese_liste(F_STECKER, "Schuko")) {
                 setze_power(2);
-            }  else{
+            } else {
                 FilterWorks.setze_power(0);
             }
         }
-        if(LogWorker.isVERBOSE())LogWorker.d(LOG_TAG,"setzeFastCharge: "+lese_minpower());
+        if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "setzeFastCharge: " + lese_minpower());
     }
 
 
     public static boolean lese_filter(Integer F) {
         if (LogWorker.isVERBOSE())
-            LogWorker.d(LOG_TAG, " Lese Filter: " + F + "(" + FilterInt2StrHelper(F) + "):" + (filter!=null&&filter.size()>0&&F<filter.size()?filter.get(F):false));
-        return (filter!=null&&filter.size()>0&&F<filter.size()?filter.get(F):false);
+            LogWorker.d(LOG_TAG, " Lese Filter: " + F + "(" + FilterInt2StrHelper(
+                    F) + "):" + (filter != null && filter.size() > 0 && F < filter.size() ? filter.get(
+                    F) : false));
+        return (filter != null && filter.size() > 0 && F < filter.size() ? filter.get(F) : false);
 
 
     }
@@ -507,12 +523,16 @@ public class FilterWorks {
         switch (Liste) {
             case F_STECKER:
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, "LeseFilterListe: " + Liste + ":" + Value + " " + stecker.contains(Value));
+                    LogWorker.d(LOG_TAG,
+                            "LeseFilterListe: " + Liste + ":" + Value + " " + stecker.contains(
+                                    Value));
                 return (stecker.contains(Value));
 
             case F_VERBUND:
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, "LeseFilterListe: " + Liste + ":" + Value + " " + verbund.contains(Value));
+                    LogWorker.d(LOG_TAG,
+                            "LeseFilterListe: " + Liste + ":" + Value + " " + verbund.contains(
+                                    Value));
                 return (verbund.contains(Value));
 
             case F_KARTEN:
@@ -527,7 +547,9 @@ public class FilterWorks {
                     }
 
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, "LeseFilterListe: " + Liste + ":" + Value + "(" + cardid + ")" + karten.contains(cardid));
+                    LogWorker.d(LOG_TAG,
+                            "LeseFilterListe: " + Liste + ":" + Value + "(" + cardid + ")" + karten.contains(
+                                    cardid));
                 return karten.contains(cardid);
 
         }
@@ -543,8 +565,7 @@ public class FilterWorks {
 
 
     // Liste gleich komplett ändern
-    public static boolean liste_aendern(String Liste, HashMap<String,Boolean> Value) {
-
+    public static boolean liste_aendern(String Liste, HashMap<String, Boolean> Value) {
 
 
         return false;
@@ -561,34 +582,41 @@ public class FilterWorks {
                     if (LogWorker.isVERBOSE())
                         LogWorker.d(LOG_TAG, "ListeAendern: SteckerFilter: BELIEBIG");
                     stecker.clear();
-                    SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);
+                    SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
                     return true;
                 }
                 if (stecker.contains(Value)) stecker.remove(Value);
                 else stecker.add(Value);
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, "ListeAendern: SteckerFilter:" + Value + " = " + stecker.contains(Value));
+                    LogWorker.d(LOG_TAG,
+                            "ListeAendern: SteckerFilter:" + Value + " = " + stecker.contains(
+                                    Value));
                 filter_speichern();
-                if (stecker.contains(Value)){ SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);return true;}
-                else return false;
+                if (stecker.contains(Value)) {
+                    SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
+                    return true;
+                } else return false;
 
             case F_VERBUND:
                 if (Value.equals(BELIEBIG)) {
                     if (LogWorker.isVERBOSE())
                         LogWorker.d(LOG_TAG, "ListeAendern: VerbundFilter: BELIEBIG");
                     verbund.clear();
-                    SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);
+                    SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
                     return true;
                 }
 
                 if (verbund.contains(Value)) verbund.remove(Value);
                 else verbund.add(Value);
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, "ListeAendern: VerbundFilter:" + Value + " = " + verbund.contains(Value));
+                    LogWorker.d(LOG_TAG,
+                            "ListeAendern: VerbundFilter:" + Value + " = " + verbund.contains(
+                                    Value));
                 filter_speichern();
-                if (verbund.contains(Value)) {        SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);
-                    return true;}
-                else return false;
+                if (verbund.contains(Value)) {
+                    SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
+                    return true;
+                } else return false;
 
             case F_KARTEN:
                 //Erstmal Titel zu Id umsetzen
@@ -597,7 +625,7 @@ public class FilterWorks {
                     if (LogWorker.isVERBOSE())
                         LogWorker.d(LOG_TAG, "ListeAendern: KartenFilter: BELIEBIG");
                     karten.clear();
-                    SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);
+                    SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
                     return true;
                 }
 
@@ -610,13 +638,17 @@ public class FilterWorks {
                         }
                     }
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, "ListeAendern: KartenFilter ändern:" + cardid + " = bisher " + karten.contains(cardid));
+                    LogWorker.d(LOG_TAG,
+                            "ListeAendern: KartenFilter ändern:" + cardid + " = bisher " + karten.contains(
+                                    cardid));
                 if (karten.contains(cardid)) karten.remove(cardid);
                 else karten.add(cardid);
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, "ListeAendern: KartenFilter geändert:" + cardid + " = " + karten.contains(cardid));
+                    LogWorker.d(LOG_TAG,
+                            "ListeAendern: KartenFilter geändert:" + cardid + " = " + karten.contains(
+                                    cardid));
                 filter_speichern();
-                SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);
+                SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
 
                 return karten.contains(cardid);
 
@@ -631,22 +663,24 @@ public class FilterWorks {
                     if (LogWorker.isVERBOSE())
                         LogWorker.d(LOG_TAG, "ListeAendern: SteckerFilter: BELIEBIG");
                     stecker.clear();
-                    SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);
+                    SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
                     return true;
                 }
 
-                if((!add&&stecker.contains(Value))||(add&&!stecker.contains(Value))) {
+                if ((!add && stecker.contains(Value)) || (add && !stecker.contains(Value))) {
                     if (!add && stecker.contains(Value)) stecker.remove(Value);
                     else {
-                        if (add && !stecker.contains(Value)) stecker.add(Value);
+                        if (add) stecker.add(Value);
                     }
 
                     if (LogWorker.isVERBOSE())
-                        LogWorker.d(LOG_TAG, "ListeAendern: SteckerFilter:" + Value + " = " + stecker.contains(Value));
+                        LogWorker.d(LOG_TAG,
+                                "ListeAendern: SteckerFilter:" + Value + " = " + stecker.contains(
+                                        Value));
                     filter_speichern();
                     SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
 
-                        return stecker.contains(Value);
+                    return stecker.contains(Value);
                 }
 
             case F_VERBUND:
@@ -654,18 +688,21 @@ public class FilterWorks {
                     if (LogWorker.isVERBOSE())
                         LogWorker.d(LOG_TAG, "ListeAendern: VerbundFilter: BELIEBIG");
                     verbund.clear();
-                    SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);
+                    SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
                     return true;
                 }
 
                 if (verbund.contains(Value)) verbund.remove(Value);
                 else verbund.add(Value);
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, "ListeAendern: VerbundFilter:" + Value + " = " + verbund.contains(Value));
+                    LogWorker.d(LOG_TAG,
+                            "ListeAendern: VerbundFilter:" + Value + " = " + verbund.contains(
+                                    Value));
                 filter_speichern();
-                if (verbund.contains(Value)) {        SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);
-                    return true;}
-                else return false;
+                if (verbund.contains(Value)) {
+                    SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
+                    return true;
+                } else return false;
 
             case F_KARTEN:
                 //Erstmal Titel zu Id umsetzen
@@ -674,7 +711,7 @@ public class FilterWorks {
                     if (LogWorker.isVERBOSE())
                         LogWorker.d(LOG_TAG, "ListeAendern: KartenFilter: BELIEBIG");
                     karten.clear();
-                    SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);
+                    SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
                     return true;
                 }
 
@@ -687,19 +724,24 @@ public class FilterWorks {
                         }
                     }
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, "ListeAendern: KartenFilter ändern:" + cardid + " = bisher " + karten.contains(cardid));
+                    LogWorker.d(LOG_TAG,
+                            "ListeAendern: KartenFilter ändern:" + cardid + " = bisher " + karten.contains(
+                                    cardid));
                 if (karten.contains(cardid)) karten.remove(cardid);
                 else karten.add(cardid);
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, "ListeAendern: KartenFilter geändert:" + cardid + " = " + karten.contains(cardid));
+                    LogWorker.d(LOG_TAG,
+                            "ListeAendern: KartenFilter geändert:" + cardid + " = " + karten.contains(
+                                    cardid));
                 filter_speichern();
-                SaeulenWorks.checkMarkerCache("setze Liste "+Liste+" "+Value);
+                SaeulenWorks.checkMarkerCache("setze Liste " + Liste + " " + Value);
 
                 return karten.contains(cardid);
 
         }
         return false;
     }
+
     /*
         public static String lese_liste(String Liste){
             String L = "";
@@ -740,10 +782,8 @@ public class FilterWorks {
                 return (verbund.size() > 0);
 
 
-
             case F_KARTEN:
                 return (karten.size() > 0);
-
 
 
         }
@@ -877,10 +917,12 @@ public class FilterWorks {
                 params += "plugs=" + URLEncoder.encode(TextUtils.join(",", stecker), "UTF-8") + "&";
 
             if (verbund != null && verbund.size() > 0)
-                params += "networks=" + URLEncoder.encode(TextUtils.join(",", verbund), "UTF-8") + "&";
+                params += "networks=" + URLEncoder.encode(TextUtils.join(",", verbund),
+                        "UTF-8") + "&";
 
             if (karten != null && karten.size() > 0)
-                params += "chargecards=" + URLEncoder.encode(TextUtils.join(",", karten), "UTF-8") + "&";
+                params += "chargecards=" + URLEncoder.encode(TextUtils.join(",", karten),
+                        "UTF-8") + "&";
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -896,7 +938,9 @@ public class FilterWorks {
             else if (filter.get(F_open247))
                 params += "open_twentyfourseven=" + filter.get(F_open247).toString() + "&";
             else
-                params += "open_twentyfourseven=" + filter.get(F_open247).toString() + "&" + "open_now=" + filter.get(F_opennow).toString() + "&";
+                params += "open_twentyfourseven=" + filter.get(
+                        F_open247).toString() + "&" + "open_now=" + filter.get(
+                        F_opennow).toString() + "&";
 
 
             params += "verified=" + filter.get(F_BESTAETIGT).toString() + "&";
@@ -921,7 +965,8 @@ public class FilterWorks {
                 params += "plugs=" + URLEncoder.encode(TextUtils.join(",", stecker), "UTF-8") + "&";
 
             if (verbund != null && verbund.size() > 0)
-                params += "networks=" + URLEncoder.encode(TextUtils.join(",", verbund), "UTF-8") + "&";
+                params += "networks=" + URLEncoder.encode(TextUtils.join(",", verbund),
+                        "UTF-8") + "&";
 
             if (karten != null && karten.size() > 0)
                 params += "cards=" + URLEncoder.encode(TextUtils.join(",", karten), "UTF-8") + "&";
@@ -940,7 +985,9 @@ public class FilterWorks {
             else if (filter.get(F_open247))
                 params += "open_twentyfourseven=" + filter.get(F_open247).toString() + "&";
             else
-                params += "open_twentyfourseven=" + filter.get(F_open247).toString() + "&" + "open_now=" + filter.get(F_opennow).toString() + "&";
+                params += "open_twentyfourseven=" + filter.get(
+                        F_open247).toString() + "&" + "open_now=" + filter.get(
+                        F_opennow).toString() + "&";
 
 
             params += "verified=" + filter.get(F_BESTAETIGT).toString() + "&";
@@ -954,26 +1001,24 @@ public class FilterWorks {
     }
 
 
-
-    public static String[] ListetoArray(String Liste){
-
+    public static String[] ListetoArray(String Liste) {
 
 
         switch (Liste) {
             case FilterWorks.F_STECKER:
-                        return (String[]) stecker_verfuegbar_API.toArray();
+                return (String[]) stecker_verfuegbar_API.toArray();
 
 
             case FilterWorks.F_KARTEN:
-                       return (String[]) karten_verfuegbar_API.values().toArray();
+                return (String[]) karten_verfuegbar_API.values().toArray();
 
             default:
-                return  (String[]) stecker_verfuegbar_API.toArray();
+                return (String[]) stecker_verfuegbar_API.toArray();
 
         }
 
 
-        }
+    }
 
     public static ArrayList<FilterEintrag> ListeToArrayList(String Liste) {
 
@@ -990,7 +1035,8 @@ public class FilterWorks {
                     }
                 }
                 if (LogWorker.isVERBOSE())
-                    LogWorker.d(LOG_TAG, stecker_verfuegbar_API.size() + "/" + filterListe.size() + " Stecker verfügbar");
+                    LogWorker.d(LOG_TAG,
+                            stecker_verfuegbar_API.size() + "/" + filterListe.size() + " Stecker verfügbar");
                 break;
 
             case FilterWorks.F_VERBUND:
@@ -1004,7 +1050,8 @@ public class FilterWorks {
 
             case FilterWorks.F_KARTEN:
                 for (Map.Entry<Integer, String> e : karten_verfuegbar_API.entrySet()) {
-                    filterListe.add(new FilterEintrag(e.getValue(), karten.contains(String.valueOf(e.getKey()))));
+                    filterListe.add(new FilterEintrag(e.getValue(),
+                            karten.contains(String.valueOf(e.getKey()))));
 
                 }
                 if (LogWorker.isVERBOSE())
@@ -1016,7 +1063,8 @@ public class FilterWorks {
         Collections.sort(filterListe);
 
         if (LogWorker.isVERBOSE())
-            LogWorker.d(LOG_TAG, "FilterListeToArray " + Liste + " mit " + filterListe.size() + " Einträge verfügbar");
+            LogWorker.d(LOG_TAG,
+                    "FilterListeToArray " + Liste + " mit " + filterListe.size() + " Einträge verfügbar");
         return filterListe;
     }
 
@@ -1074,7 +1122,8 @@ public class FilterWorks {
 
     public static void renamePreset(String old, String neu) {
         if (LogWorker.isVERBOSE()) LogWorker.d(LOG_TAG, "Rename Preset " + old + " zu " + neu);
-        if (neu.isEmpty() || presets.contains(neu) || neu.equals(KartenActivity.getInstance().getString(R.string.filter_neuesprofil))) {
+        if (neu.isEmpty() || presets.contains(neu) || neu.equals(
+                KartenActivity.getInstance().getString(R.string.filter_neuesprofil))) {
 
 
             return;
@@ -1103,9 +1152,11 @@ public class FilterWorks {
     }
 
     public static void clearPreset(String preset) {
-        if (!preset.equals(KartenActivity.getInstance().getString(R.string.filter_standardprofil)) && presets.contains(preset))
+        if (!preset.equals(KartenActivity.getInstance().getString(
+                R.string.filter_standardprofil)))
             presets.remove(preset);
-        SharedPreferences sharedPref = KartenActivity.getInstance().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = KartenActivity.getInstance().getPreferences(
+                Context.MODE_PRIVATE);
         SharedPreferences.Editor r = sharedPref.edit();
 
         r.remove(preset + "KOSTENLOS");
@@ -1141,20 +1192,21 @@ public class FilterWorks {
                     "MapReady: " + KartenActivity.isMapReady());
 
 */
-        if (filter!=null && filter.size()<5) lade_filter_db();
+        if (filter != null && filter.size() < 5) lade_filter_db();
 
-        boolean ret = (filter_initialized?true:stecker_verfuegbar_API != null && stecker_verfuegbar_API.size() > 0
+        boolean ret = (filter_initialized || stecker_verfuegbar_API != null && stecker_verfuegbar_API.size() > 0
                 && verbund_verfuegbar_API != null && verbund_verfuegbar_API.size() > 0
                 && karten_verfuegbar_API != null && karten_verfuegbar_API.size() > 0
                 && filter != null && filter.size() > 5
                 && KartenActivity.isMapReady());
-        filter_initialized=ret;
+        filter_initialized = ret;
         if (LogWorker.isVERBOSE())
             LogWorker.d(LOG_TAG, "filter initialized" + ret);
 
         if (ret) AnimationWorker.hideStartup();
         return (ret);
     }
+
     public static int listenlaenge(String Liste) {
 
         if (Liste == F_KARTEN) return karten.size();

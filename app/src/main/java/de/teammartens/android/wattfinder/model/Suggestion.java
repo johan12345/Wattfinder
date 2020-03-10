@@ -14,15 +14,15 @@ public class Suggestion {
     private int icon = R.drawable.ic_place;
     private int id;
 
-    public Suggestion(){
+    public Suggestion() {
 
     }
 
-    public Suggestion (int ID,String faddress, String desc, Double Lat, Double Lng){
-        this.description=desc;
-        this.formatted_address=faddress;
-        this.id=ID;
-        this.coordinates = new LatLng(Lat,Lng);
+    public Suggestion(int ID, String faddress, String desc, Double Lat, Double Lng) {
+        this.description = desc;
+        this.formatted_address = faddress;
+        this.id = ID;
+        this.coordinates = new LatLng(Lat, Lng);
 
     }
 
@@ -37,8 +37,9 @@ public class Suggestion {
     public LatLng getCoordinates() {
         return coordinates;
     }
+
     public String getCoordString() {
-        return String.valueOf(coordinates.latitude)+":"+String.valueOf(coordinates.longitude);
+        return coordinates.latitude + ":" + coordinates.longitude;
     }
 
     public void setCoordinates(LatLng coordinates) {
